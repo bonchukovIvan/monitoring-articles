@@ -1,0 +1,120 @@
+body {
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+}
+.wrapper {
+    max-width: 1500px;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+.border-header h2{
+    border-left: 4px solid #4419ef;
+    padding: 10px 0px 10px 10px ;
+}
+.border-header h2 {
+    font-size: 32px;
+    font-weight: 700;
+}
+.border-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.site-main {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 50px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.site-data {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    padding: 25px 0px;
+    border-top: 2px dashed #4419ef;
+}
+.item-list {
+
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 15px;
+    max-height: max-content;
+    /* border: 1px dashed #038897; */
+}
+.item {
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: rgba(0, 0.8, 0.8, 0.3) 0px 2px 3px 0px;
+}
+.item--red {
+    background-color: #ff4747;
+    color: #fff;
+}
+.item--orange {
+    background-color: #ffbe47;
+}
+.item--green {
+    background-color: #47ff91;
+}
+.item--error {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+}
+.item-list#setup_info {
+    grid-column: 1/-1;
+}
+.item__group {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px;
+    align-items: center;
+}
+.item__prop-name {
+    font-weight: 700;
+}
+.item__prop {
+    width: 60%;
+    text-align: end;
+}
+
+/* Copyright */
+.copyright__text {
+    border-top: 2px dashed #f7f7f7;
+    padding: 25px;
+    text-align: center;
+}
+.wbsmd-header {
+    position: relative;
+    z-index: 9999;
+    background-color: #fff;
+}
+.wbsmd-header__body {
+    border-bottom: 2px dashed #f7f7f7;
+    padding: 25px 25px;
+}
+.wbsmd-header__body h1 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+}
+/* .wbsmd-header__body {
+    background-color: #fff;
+} */
+
+@media (max-width: 979px) {
+    .site-data {
+        display: flex;
+        flex-direction: column;
+    }
+}
