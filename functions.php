@@ -22,6 +22,9 @@ function wbsmd_custom_post_types() {
 }
 
 function wbsmd_dates_check($data) {
+    if (!$data) {
+        return null;
+    }
     $counter = 0;
     for($i = 0; $i < count($data); $i++ ) {
 

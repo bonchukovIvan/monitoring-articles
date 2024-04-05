@@ -21,6 +21,27 @@ $args = array(
 );
 $posts = new WP_Query( $args );
 
+function wbsmd_choice_item_class($result) {
+
+    if ($result < 30) {
+        return 'item--green';
+    } 
+
+    elseif ($result >= 30 && $result < 90) {
+        return'item--orange';
+    } 
+
+    elseif ($result > 90) {
+        return 'item--red';
+    } 
+
+    return null;
+}
+
+function wbsmd_convert_to_percents($f, $s) {
+    return number_format((float)($f/$s)*100, 2, '.', '');
+}
+
 ?>
 
 <?php get_header(); ?>
@@ -29,111 +50,49 @@ $posts = new WP_Query( $args );
     <h2>Звіт по сайтам</h2>
 </div>
 <section class="site-data">
+<?php if ( $posts->have_posts() ) : ?>
+    <?php while ( $posts->have_posts() ) : ?>
+        <?php $posts->the_post(); ?>
+        <?php 
+            $response_decode = json_decode( wbsmd_get_request( the_title( '', '', false ) ) );
 
-  <div class="item-list" id="news">
-        <div class="border-header">
-            <h3>Новини</h3>
-        </div>
-        <?php if ( $posts->have_posts() ) : ?>
-            <?php while ( $posts->have_posts() ) : ?>
-                <?php $posts->the_post();?>
-                <?php 
+            if ( !isset( $response_decode->data ) ) {
+                echo 'no data'.'<br>';
+                continue;
+            }
+            
+            $data = ( object ) $response_decode->data[0];
+            if (!$data->news || !$data->events) {
+                echo 'no news or events data' . '<br>';
+                continue;
+            }
+            $news_counter = wbsmd_dates_check($data->news);
+            $news_result = wbsmd_convert_to_percents($news_counter, count($data->news));
+            $news_class = wbsmd_choice_item_class($news_result);
 
-                    $response_decode = json_decode( wbsmd_get_request(the_title('', '', false)) );
-                    $data = (object) $response_decode->data[0];
+            $events_counter = wbsmd_dates_check($data->events);
+            $events_result = wbsmd_convert_to_percents($events_counter, count($data->events));
+            $events_class = wbsmd_choice_item_class($events_result);
+        ?>
 
-                    $counter = wbsmd_dates_check($data->news);
-
-                    $result = ($counter/count($data->news))*100;
-                    $result = number_format((float)$result, 2, '.', '');
-
-                    $add_class = '';
-                    if ($result < 30) {
-                        $add_class = 'item--green';
-                    } 
-                    elseif ($result >= 30 && $result < 90) {
-                        $add_class = 'item--orange';
-                    } 
-                    elseif ($result > 90) {
-                        $add_class = 'item--red';
-                    } 
-
-                ?>
-                <div class="item <?php echo $add_class; ?>">
-                    <div class="item__body">
-                        <div class="item__group">
-                            <div class="item__prop-name">Ресурс:</div>      
-                            <div class="item__prop"><?php the_title();?></div>      
-                        </div>
-                        <div class="item__group">
-                            <div class="item__prop-name">Коефіцієнт помилок:</div>      
-                            <div class="item__prop"><?php echo $result; ?></div>      
-                        </div>
-
-                    </div>
-                </div>
-                <?php   endwhile; ?>
-            <?php  endif; ?>
-            <?php wp_reset_query(); ?>
-        <?php if(!$data->news) : ?>
-            <div class="item--error">
-                <div class="item__body">
-                    <?php echo wbsmd_get_error_message(); ?>
-                </div>
+        <div class="item <?php echo $events_class; ?>">
+            <div class="item__group">
+                <div class="item__prop-name">Ресурс:</div>      
+                <div class="item__prop"><?php the_title();?></div>      
             </div>
-        <?php endif; ?>
-    </div> 
-
-
-    <div class="item-list" id="events">
-        <div class="border-header">
-            <h3>Події</h3>
-        </div>
-        <?php if ( $posts->have_posts() ) : ?>
-            <?php while ( $posts->have_posts() ) : ?>
-                <?php $posts->the_post();?>
-                <?php 
-
-                    $counter = wbsmd_dates_check($data->events);
-                    $result = ($counter/count($data->events))*100;
-                    $result = number_format((float)$result, 2, '.', '');
-
-                    $add_class = '';
-                    if ($result < 30) {
-                        $add_class = 'item--green';
-                    } 
-                    elseif ($result >= 30 && $result < 90) {
-                        $add_class = 'item--orange';
-                    } 
-                    elseif ($result > 90) {
-                        $add_class = 'item--red';
-                    } 
-
-                ?>
-                <div class="item <?php echo $add_class; ?>">
-                    <div class="item__body">
-                        <div class="item__group">
-                            <div class="item__prop-name">Ресурс:</div>      
-                            <div class="item__prop"><?php the_title();?></div>      
-                        </div>
-                        <div class="item__group">
-                            <div class="item__prop-name">Коефіцієнт помилок:</div>      
-                            <div class="item__prop"><?php echo $result; ?>%</div>      
-                        </div>
-
-                    </div>
-                </div>
-                <?php   endwhile; ?>
-            <?php  endif; ?>
-            <?php wp_reset_query(); ?>
-        <?php if(!$data->events) : ?>
-            <div class="item--error">
-                <div class="item__body">
-                    <?php echo wbsmd_get_error_message(); ?>
-                </div>
+            <div class="item__group">
+                <div class="item__prop-name">Пропущено новин:</div>      
+                <div class="item__prop"><?php echo $news_counter ?> з <?php echo count($data->news) ?> [<?php echo $news_result; ?>%]</div>      
             </div>
-        <?php endif; ?>
-    </div>
+            <div class="item__group">
+                <div class="item__prop-name">Пропущено подій:</div>      
+                <div class="item__prop"><?php echo $events_counter ?> з <?php echo count($data->events) ?> [<?php echo $events_result; ?>%]</div>      
+            </div>
+        </div>
+
+
+
+    <?php endwhile; ?>
+<?php endif; ?>
 </section>
-
-<?php get_footer(); ?>1
+<?php get_footer(); 
