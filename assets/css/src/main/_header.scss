@@ -1,0 +1,17 @@
+.wbsmd {
+    &-header {
+        position: relative;
+        z-index: 9999;
+        background-color: #fff;
+    }
+    &-header__body {
+        border-bottom: 2px dashed #f7f7f7;
+        padding: 25px 25px;
+    }
+    &-header__body h1 {
+        font-size: 32px;
+        font-weight: 700;
+        text-align: center;
+    }
+}
+

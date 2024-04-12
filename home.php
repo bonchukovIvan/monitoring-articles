@@ -57,7 +57,7 @@ function wbsmd_convert_to_percents($f, $s) {
             $response_decode = json_decode( wbsmd_get_request( the_title( '', '', false ) ) );
 
             if ( !isset( $response_decode->data ) ) {
-                echo 'no data'.'<br>';
+                echo the_title() . 'no data'.'<br>';
                 continue;
             }
             
@@ -75,7 +75,7 @@ function wbsmd_convert_to_percents($f, $s) {
             $events_class = wbsmd_choice_item_class($events_result);
         ?>
 
-        <div class="item <?php echo $events_class; ?>">
+        <div class="item">
             <div class="item__group">
                 <div class="item__prop-name">Ресурс:</div>      
                 <div class="item__prop"><?php the_title();?></div>      

@@ -1,0 +1,15 @@
+@use '../abstracts' as abs;
+
+.border-header {
+    h2 {
+        border-left: 4px solid abs.$smd_orange;
+        padding: 10px 0px 10px 10px ;
+        font-size: 32px;
+        font-weight: 700;
+    }
+    h3 {
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+}

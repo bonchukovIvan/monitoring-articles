@@ -129,7 +129,7 @@ $data = (object) $response_decode->data[0];
         <?php if(!$data->events) : ?>
             <div class="item--error">
                 <div class="item__body">
-                    <?php echo wbsmd_get_error_message(); ?>
+                    <?php echo   wbsmd_get_error_message(); ?>
                 </div>
             </div>
         <?php endif; ?>
