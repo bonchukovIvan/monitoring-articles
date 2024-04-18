@@ -1,5 +1,29 @@
 <?php
 
+use Carbon_Fields\Container;
+use Carbon_Fields\Field;
+
+add_action( 'after_setup_theme', 'crb_load' );
+function crb_load() {
+    require_once( 'vendor/autoload.php' );
+    \Carbon_Fields\Carbon_Fields::boot();
+}
+
+// Register custom fields for the 'wbsmd_ma_links' post type
+add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields');
+
+function wbsmd_register_custom_fields() {
+    // Define the field container
+    Container::make('post_meta', __('CMS', 'textdomain'))
+        ->where('post_type', '=', 'wbsmd_ma_links')
+        ->add_fields(array(
+            Field::make('radio', 'site_cms', __('Оберіть вид CMS', 'textdomain'))->add_options( array(
+                'jml' => 'Joomla!',
+                'wp' => 'WordPress',
+            ))
+        ));
+}
+
 function wbsmd_get_error_message() {
     return 'Інформація відсутня ;^(';
 }
@@ -8,14 +32,23 @@ function wbsmd_custom_post_types() {
 	register_post_type('wbsmd_ma_links',
 		array(
 			'labels'      => array(
-				'name'          => __('Сайти [МА]', 'textdomain'),
-				'singular_name' => __('Сайт [МА]', 'textdomain'),
+                'name'          => __('Сайти [МА]', 'textdomain'),
+                'singular_name' => __('Сайт [МА]', 'textdomain'),
+                'add_new'       => __('Додати новий сайт', 'textdomain'),
+                'add_new_item'  => __('Додати новий сайт', 'textdomain'),
+                'edit_item'     => __('Редагувати сайт', 'textdomain'),
+                'new_item'      => __('Новий сайт', 'textdomain'),
+                'view_item'     => __('Переглянути сайт', 'textdomain'), 
+                'search_items'  => __('Шукати сайти', 'textdomain'),
+                'not_found'     => __('Сайтів не знайдено', 'textdomain'), 
+                'not_found_in_trash' => __('Сайтів у кошику не знайдено', 'textdomain'), 
+                'parent_item_colon'  => __('Батьківський сайт:', 'textdomain'),
+                'menu_name'     => __('Сайти [МА]', 'textdomain'), 
 			),
 				'public'      => true,
 				'has_archive' => false,
                 'supports' => array(
                     'title',
-                    'excerpt',
                 )    
 		)
 	);
@@ -44,7 +77,19 @@ function wbsmd_dates_check($data) {
 
 function wbsmd_get_request($link) {
     $curl  = curl_init();
-    $url   = $link .'index.php?option=com_ajax&plugin=ajaxarticles&format=json';
+
+    $site_cms = carbon_get_the_post_meta( 'site_cms' );
+    $api_url_part = '';
+    switch($site_cms) {
+        case 'jml':
+            $api_url_part = 'index.php?option=com_ajax&plugin=ajaxarticles&format=json';
+            break;
+        case 'wp':
+            $api_url_part = '/wp-json/websumdu/v1/monitoring';
+            break;
+    }
+
+    $url = $link . $api_url_part ;
  
     $headers = [
     'Accept: application/vnd.api+json',

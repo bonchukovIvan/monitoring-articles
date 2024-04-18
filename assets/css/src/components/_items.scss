@@ -16,15 +16,10 @@
         width: 75%;
         box-shadow: rgba(0, 0.8, 0.8, 0.3) 0px 2px 3px 0px;
     }
-    &--red {
+    &.no-data {
         background-color: abs.$smd_item-error;
-        color: #fff;
-    }
-    &--orange {
-        background-color: abs.$smd_item-average;
-    }
-    &--green {
-        background-color: abs.$smd_item-error;
+        display: flex;
+        justify-content: space-between;
     }
     &--error {
         height: 100%;
@@ -35,6 +30,15 @@
         font-size: 24px;
         font-weight: 700;
     }
+    &--red {
+        color: abs.$smd_item-error;
+    }
+    &--orange {
+        color: abs.$smd_item-average;
+    }
+    &--green {
+        color: abs.$smd_item-done;
+    }
     &-list#setup_info {
         grid-column: 1/-1;
     }
@@ -43,9 +47,13 @@
         justify-content: space-between;
         margin: 10px 0px;
         align-items: center;
+
     }
     &__prop-name {
         font-weight: 700;
+        span {
+            font-weight: normal;
+        }
     }
     &__prop {
         width: 60%;
