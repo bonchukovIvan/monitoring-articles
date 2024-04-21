@@ -22,4 +22,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 </div>
 	<?php get_template_part('template-parts/footer/site', 'footer'); ?>
 </body>
+<?php wp_footer(); ?>
 </html>

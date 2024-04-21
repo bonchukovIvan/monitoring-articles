@@ -3,6 +3,8 @@
 use Carbon_Fields\Container;
 use Carbon_Fields\Field;
 
+define('WEBSUMDU_THEME_URI', get_template_directory_uri());
+
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
     require_once( 'vendor/autoload.php' );
@@ -56,7 +58,7 @@ function wbsmd_custom_post_types() {
 
 function wbsmd_dates_check($data) {
     if (!$data) {
-        return null;
+        return 0;
     }
     $counter = 0;
     for($i = 0; $i < count($data); $i++ ) {
@@ -109,7 +111,7 @@ function wbsmd_get_request($link) {
         ]
     );
 
-    curl_close($curl);
+    curl_close( $curl );
     return curl_exec( $curl );
 }
 
@@ -117,8 +119,18 @@ function wbsmd_add_theme_scripts() {
     /* 
      * include styles
      */
-	wp_enqueue_style( 'style', get_template_directory_uri() . '/assets/css/style.min.css' );
+	wp_enqueue_style( 'style', WEBSUMDU_THEME_URI . '/assets/css/style.min.css' );
 	wp_enqueue_style( 'roboto', 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap' );
+    /* 
+     * register jquery
+     */
+    wp_deregister_script( 'jquery' );
+    wp_register_script( 'jquery', WEBSUMDU_THEME_URI . '/assets/js/src/jquery-3.7.1.min.js' );
+    /* 
+     * include scripts
+     */
+    wp_enqueue_script( 'jquery' );
+    wp_enqueue_script( 'app', WEBSUMDU_THEME_URI . '/assets/js/app.min.js', ['jquery'] );
 }
 
 add_action('init', 'wbsmd_custom_post_types');

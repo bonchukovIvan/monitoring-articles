@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "production": "mix --production"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bonchukovIvan/monitoring-articles.git"
@@ -18,6 +22,7 @@
   },
   "homepage": "https://github.com/bonchukovIvan/monitoring-articles#readme",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "laravel-mix": "^6.0.49",
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.75.0",

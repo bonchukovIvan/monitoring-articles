@@ -42,6 +42,100 @@ function wbsmd_convert_to_percents($f, $s) {
     return number_format((float)($f/$s)*100, 2, '.', '');
 }
 
+function wbsmd_check_category($data, $name) {
+    switch( $name ) {
+        case 'news':
+            $title = 'Новини';
+            break;
+        case 'eng_news':
+            $title = 'Англомовні новини';
+            break;
+        case 'events':
+            $title = 'Анонси';
+            break;
+        case 'eng_events':
+            $title = 'Англомовні анонси';
+            break;
+        default:
+            $title  = '';
+    }
+
+    wbsmd_create_item_group(
+        strtoupper($title), 
+        ''
+    );
+
+    $last_class = (strtotime($data[0]->created) > strtotime('-10days')) 
+    ? 'item--green' : 'item--red' ;
+
+    if ( count($data) != 1 ) {
+        $counter = wbsmd_dates_check($data);
+        $result = wbsmd_convert_to_percents($counter, count($data)-1);
+        $class = wbsmd_choice_item_class($result);
+    
+        wbsmd_create_item_group(
+            'Кількість інтервалів в більше ніж 10 днів:', 
+            $counter.' з '.count($data)-1 . '[' . $result .'%]',
+            $class
+        );
+        wbsmd_create_item_group(
+            'Останній пост: <span>'.$data[0]->title.'</span>', 
+            $data[0]->created,
+            $last_class
+        );
+    } else {
+        wbsmd_create_item_group(
+            'Знайдено 1 запис:', 
+            $data[0]->created,
+            $last_class
+        );
+    }
+    echo '<hr>';
+}
+
+function wbsmd_check_categories($data) {
+    foreach($data as $key => $value) {
+        if ( isset($value->error) ) {
+            wbsmd_create_item_group(
+                'Виникла помилка ['.$key.']:',
+                 $value->error,
+                'item--red');
+            continue;
+        }
+        wbsmd_check_category($value, $key);
+    }
+}
+
+function wbsmd_create_item_group($prop_name, $prop, $class = '') {
+    echo '<div class="item__group '. $class .'">';
+        echo '<div class="item__prop-name">' . $prop_name . '</div> ';
+        echo '<div class="item__prop">' . $prop . '</div> ';
+    echo '</div>';
+}
+function wbsmd_display_setup($setup_info) {
+    switch(carbon_get_the_post_meta( 'site_cms' )) {
+        case 'jml':
+            $cms = 'Joomla!';
+            break;
+        case 'wp':
+            $cms = 'WordPress';
+            break;
+    }
+    wbsmd_create_item_group( 'CMS:', $cms );
+    foreach($setup_info as $key => $value) {
+        wbsmd_create_item_group( $key, $value );
+    }
+}
+
+function wbsmd_display_more($setup_info) {
+    echo '<div class="more-btn">';
+        echo '<button>Детальніше</button>';
+        echo '<span class="arrow down"></span>';
+    echo '</div>';
+    echo '<div class="item__more-section"  id="item-more-section">';
+        wbsmd_display_setup($setup_info);
+    echo ' </div>';
+}
 ?>
 
 <?php get_header(); ?>
@@ -54,66 +148,28 @@ function wbsmd_convert_to_percents($f, $s) {
 <?php if ( $posts->have_posts() ) : ?>
     <?php while ( $posts->have_posts() ) : ?>
         <?php $posts->the_post(); ?>
-        <?php 
-            $response_decode = json_decode( wbsmd_get_request( the_title( '', '', false ) ) );
+            <div class="item">
+            <?php 
 
-            if ( !isset( $response_decode->data ) ) {
-                echo '<div class="item no-data">';
-                    echo the_title() . '<span> Помилка :( </span>'.'<br>';
-                echo '</div>';
-                continue;
-            }
+                $response_decode = json_decode( wbsmd_get_request( the_title( '', '', false ) ) );
+                $data = (array) $response_decode->data[0];
 
-            $data = ( object ) $response_decode->data[0];
-            if (!$data->news || !$data->events) {
-                echo 'no news or events data' . '<br>';
-                continue;
-            }
-            $news_counter = wbsmd_dates_check($data->news);
-            $news_result = wbsmd_convert_to_percents($news_counter, count($data->news));
-            $news_class = wbsmd_choice_item_class($news_result);
+                $setup_info = $data['setup_info'];
+                unset( $data['setup_info'] );
 
-            $events_counter = wbsmd_dates_check($data->events);
-            $events_result = wbsmd_convert_to_percents($events_counter, count($data->events));
-            $events_class = wbsmd_choice_item_class($events_result);
-            $last_news_class = (strtotime($data->news[0]->created) > strtotime('-10days')) ? 'item--green' : 'item--red' ;
-            $last_events_class = (strtotime($data->events[0]->created) > strtotime('-10days')) ? 'item--green' : 'item--red' ;
+                if ( !isset( $response_decode->data ) ) {
+                    echo '<div class="item no-data">';
+                        echo the_title() . '<span> Помилка :( </span>'.'<br>';
+                    echo '</div>';
+                    continue;
+                }
 
-            switch(carbon_get_the_post_meta( 'site_cms' )) {
-                case 'jml':
-                    $cms = 'Joomla!';
-                    break;
-                case 'wp':
-                    $cms = 'WordPress';
-                    break;
-            }
-        ?>
-
-        <div class="item">
-            <div class="item__group">
-                <div class="item__prop-name">Ресурс:</div>    
-                <div class="item__prop"><?php the_title();?></div>      
-            </div>
-            <div class="item__group">
-                <div class="item__prop-name">CMS:</div>
-                <div class="item__prop"><?php echo $cms;?></div>      
-            </div>
-            <div class="item__group">
-                <div class="item__prop-name">Пропущено новин:</div>      
-                <div class="item__prop"><?php echo $news_counter ?> з <?php echo count($data->news); ?> [<?php echo $news_result; ?>%]</div>      
-            </div>
-            <div class="item__group">
-                <div class="item__prop-name">Пропущено подій:</div>      
-                <div class="item__prop"><?php echo $events_counter ?> з <?php echo count($data->events); ?> [<?php echo $events_result; ?>%]</div>      
-            </div>
-            <div class="item__group <?php echo $last_events_class; ?>">
-                <div class="item__prop-name">Остання подія: <span><?php echo $data->events[0]->title; ?></span></div>      
-                <div class="item__prop"><?php echo $data->events[0]->created; ?></div>      
-            </div>
-            <div class="item__group <?php echo $last_news_class; ?>">
-                <div class="item__prop-name">Остання новина: <span><?php echo $data->news[0]->title; ?></span></div>      
-                <div class="item__prop"><?php echo $data->news[0]->created; ?></div>
-            </div>
+                wbsmd_create_item_group('Ресурс:', the_title('', '', false));
+                wbsmd_create_item_group('Дата з якої ведеться перевірка:', $setup_info->start_date);
+                echo '<hr>';
+                wbsmd_check_categories($data);
+                wbsmd_display_more($setup_info);
+            ?>
         </div>
 
     <?php endwhile; ?>

@@ -48,7 +48,7 @@ curl_close($curl);
 
 $response_decode = json_decode( $response );
 $data = (object) $response_decode->data[0];
-// echo '<pre>' . print_r($data, 1) . '</pre>';
+
 ?>
 <div class="border-header">
     <h2>t2.sumdu.edu.ua</h2>
