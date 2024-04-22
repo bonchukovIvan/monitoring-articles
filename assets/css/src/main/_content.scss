@@ -1,7 +1,7 @@
 @use '../abstracts/' as abs;
-body {
-    font-size: 16px;
-    font-family: "Roboto", sans-serif;
+body, button {
+    font-size: abs.$smd_font-size;
+    font-family: abs.$smd_font-family
 }
 
 .wrapper {
@@ -23,7 +23,7 @@ body {
         grid-template-columns: 1fr;
         gap: 25px;
         padding: 25px 0px;
-        border-top: 2px dashed #4419ef;
+        border-top: 2px dashed abs.$smd_blue;
         justify-items: center;
     }
 }

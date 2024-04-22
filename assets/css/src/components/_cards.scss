@@ -1,0 +1,27 @@
+.wbsmd-cards {
+    &__body {
+        display: grid;
+        gap: 25px;
+    }
+    &__item {
+        padding: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+        transition: all 0.2s;
+    }
+    &__item:hover {
+        background-color: #f5f5f5;
+        position: relative;
+        transform: translateX(-10px);
+    }
+    &__link {
+        color: #333;
+        text-decoration: none;
+    }
+    &__title h4 {
+        font-size: 32px;
+    }
+}

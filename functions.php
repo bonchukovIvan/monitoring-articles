@@ -5,12 +5,15 @@ use Carbon_Fields\Field;
 
 define('WEBSUMDU_THEME_URI', get_template_directory_uri());
 
+define('WEBSUMDU_THEME_PATH', get_template_directory());
+
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-relevance-monitoring.php';
+
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
     require_once( 'vendor/autoload.php' );
     \Carbon_Fields\Carbon_Fields::boot();
 }
-
 // Register custom fields for the 'wbsmd_ma_links' post type
 add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields');
 
@@ -24,10 +27,6 @@ function wbsmd_register_custom_fields() {
                 'wp' => 'WordPress',
             ))
         ));
-}
-
-function wbsmd_get_error_message() {
-    return 'Інформація відсутня ;^(';
 }
 
 function wbsmd_custom_post_types() {
@@ -56,71 +55,20 @@ function wbsmd_custom_post_types() {
 	);
 }
 
-function wbsmd_dates_check($data) {
-    if (!$data) {
-        return 0;
-    }
-    $counter = 0;
-    for($i = 0; $i < count($data); $i++ ) {
-
-        if (!isset($data[$i+1])) {
-            continue;
-        }
-        $date1 = new DateTime($data[$i]->created);
-        $date2 = new DateTime($data[$i+1]->created);
-    
-        $interval = $date1->diff($date2);
-        if ($interval->days >= 10) {
-            $counter++;
-        }
-    }
-    return $counter;
+function wbsmd_get_error_message() {
+    return 'Інформація відсутня ;^(';
 }
 
-function wbsmd_get_request($link) {
-    $curl  = curl_init();
-
-    $site_cms = carbon_get_the_post_meta( 'site_cms' );
-    $api_url_part = '';
-    switch($site_cms) {
-        case 'jml':
-            $api_url_part = 'index.php?option=com_ajax&plugin=ajaxarticles&format=json';
-            break;
-        case 'wp':
-            $api_url_part = '/wp-json/websumdu/v1/monitoring';
-            break;
-    }
-
-    $url = $link . $api_url_part ;
- 
-    $headers = [
-    'Accept: application/vnd.api+json',
-    'Content-Type: application/json',
-    ];
-    
-    curl_setopt_array( $curl, [
-            CURLOPT_URL            => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING       => 'utf-8',
-            CURLOPT_MAXREDIRS      => 10,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2TLS,
-            CURLOPT_CUSTOMREQUEST  => 'GET',
-            CURLOPT_HTTPHEADER     => $headers,
-        ]
-    );
-
-    curl_close( $curl );
-    return curl_exec( $curl );
-}
+register_nav_menus([
+    'main_header_menu' => 'Головне меню сайту'
+]);
 
 function wbsmd_add_theme_scripts() {
     /* 
      * include styles
      */
 	wp_enqueue_style( 'style', WEBSUMDU_THEME_URI . '/assets/css/style.min.css' );
-	wp_enqueue_style( 'roboto', 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap' );
+	wp_enqueue_style( 'lora-font', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap' );
     /* 
      * register jquery
      */
@@ -138,3 +86,4 @@ add_action( 'wp_enqueue_scripts', 'wbsmd_add_theme_scripts' );
 
 add_theme_support( 'custom-logo' );
 add_theme_support( 'post-thumbnails' );
+add_theme_support('menus');

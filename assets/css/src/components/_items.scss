@@ -2,12 +2,14 @@
 
 .item {
 
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     border-radius: 5px;
     padding: 10px;
     width: 100%;
     box-shadow: rgba(0, 0.8, 0.8, 0.3) 0px 2px 3px 0px;
-
+    hr {
+        border: 1px dashed #4419ef12;
+    }
     &-list {
         border-radius: 20px;
         display: flex;
@@ -32,13 +34,22 @@
         font-weight: 700;
     }
     &--red {
-        color: abs.$smd_item-error;
+        color: #fff;
+        background: abs.$smd_item-error;
+        padding: 10px;
+        border-radius: 5px;
     }
     &--orange {
-        color: abs.$smd_item-average;
+        color: #fff;
+        background: abs.$smd_item-average;
+        padding: 10px;
+        border-radius: 5px;
     }
     &--green {
-        color: abs.$smd_item-done;
+        color: #333;
+        background: abs.$smd_item-done;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     &-list#setup_info {
