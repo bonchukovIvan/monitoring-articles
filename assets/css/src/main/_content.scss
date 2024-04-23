@@ -1,7 +1,8 @@
 @use '../abstracts/' as abs;
 body, button {
     font-size: abs.$smd_font-size;
-    font-family: abs.$smd_font-family
+    font-family: abs.$smd_font-family;
+    line-height: abs.$smd_line-heigth;
 }
 
 .wrapper {

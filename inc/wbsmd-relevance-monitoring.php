@@ -102,13 +102,24 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             curl_close( $curl );
 
             $response = json_decode( curl_exec( $curl ) );
-            $this->data = (array) $response->data[0];
+            if ($this->site_cms === 'wp' && isset($response->data->status)) {
+                return false;
+            }
+            if ($this->site_cms === 'jml' && empty($response->data)) {
+                return false;
+            } else {
+                $this->data = (array) $response->data[0];
+                return true;
+            }
+
         }
 
         function display_item_group($prop_name, $prop, $class = '') {
             echo '<div class="item__group '. $class .'">';
                 echo '<div class="item__prop-name">' . $prop_name . '</div> ';
-                echo '<div class="item__prop">' . $prop . '</div> ';
+                if ($prop) {
+                    echo '<div class="item__prop">' . $prop . '</div> ';
+                }
             echo '</div>';
         }
 
@@ -143,13 +154,13 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     $title = 'Новини';
                     break;
                 case 'eng_news':
-                    $title = 'Англомовні новини';
+                    $title = 'Новини';
                     break;
                 case 'events':
                     $title = 'Анонси';
                     break;
                 case 'eng_events':
-                    $title = 'Англомовні анонси';
+                    $title = 'Анонси';
                     break;
                 default:
                     $title  = '';
@@ -160,7 +171,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         function check_category($data, $name) {
         
             $this->display_item_group(
-                $this->get_cat_title( $name ).' [Кількість постів: '.count($data).']', 
+                $this->get_cat_title( $name ).' (кількість публікацій за період: '.count($data).')', 
                 ''
             );
         
@@ -174,12 +185,12 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                 $class = $this->wbsmd_choice_item_class($result);
             
                 $this->display_item_group(
-                    'Кількість інтервалів в більше ніж 10 днів:', 
+                    'Кількість порушень режиму публікації новин (10 днів):', 
                     $counter.' з '.count($data)-1 . '[' . $result .'%]',
                     $class
                 );
                 $this->display_item_group(
-                    'Останній пост: <span>'.$data[0]->title.'</span>', 
+                    'Крайня публікація: <span>'.$data[0]->title.'</span>', 
                     $data[0]->created,
                     $last_class
                 );
@@ -194,8 +205,26 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         }
 
         function check_categories() {
+            $c = 1;
             foreach ($this->data as $key => $value ) {
+                if ($c === 1) {
+                    echo '<div class="item__section">';
+                    $this->display_item_group(
+                        'Україномовна версія вебсайту',
+                        '',
+                        'item--title'
+                    );
+                } elseif($c === 3) {
+                    echo '<div class="item__section">';
+                    $this->display_item_group(
+                        'Англомовна версія вебсайту',
+                        '',
+                        'item--title'
+                    );
+                }
+
                 if ( isset($value->error) ) {
+                    $c++;
                     switch( $value->error ) {
                         case 'category_not_found':
                             $error = 'Категорія з заданим аліасом не знайдена :(';
@@ -211,7 +240,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     }
                     $this->display_item_group(
                         $this->get_cat_title( $key ),
-                        ' '
+                        ''
                     );
                     $this->display_item_group(
                         'Виникла помилка:',
@@ -219,15 +248,27 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                         'item--red'
                     );
                     echo '<hr>';
+                    if ($c === 3) {
+                        echo '</div>';
+                    } elseif($c === 5) {
+                        echo '</div>';
+                    }
                     continue;
+  
                 }
                 $this->check_category( $value, $key );
+                $c++;
+                if ($c === 3) {
+                    echo '</div>';
+                } elseif($c === 5) {
+                    echo '</div>';
+                }
+      
             }
         }
 
         function monitoring($is_single = false) {
             $this->get_request();
-
             if ( !$this->data ) {
                 echo '<div class="item no-data">';
                     echo the_title() . '<span> Помилка :( </span>'.'<br>';
@@ -241,10 +282,13 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             echo '<div class="item">';
             if (!$is_single) {
                 echo '<a href="'.get_permalink().'">';
-                $this->display_item_group('Ресурс:', $this->link);
+                $this->display_item_group('Ресурс:', $this->link, 'item--compact');
                 echo '</a>';
             }
-                $this->display_item_group('Дата з якої ведеться перевірка:', $setup_info->start_date);
+                $this->display_item_group(
+                    'Дата початку періоду моніторингу:', 
+                    $setup_info->start_date, 
+                    'item--compact');
                 echo '<hr>';
                 $this->check_categories();
             if (!$is_single) {

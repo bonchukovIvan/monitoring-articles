@@ -25,7 +25,7 @@ $posts = new WP_Query( $args );
 <?php get_header(); ?>
 
 <div class="border-header">
-    <h2><?php the_title(); ?></h2>
+    <h2>Протокол моніторингу актуальності інформації</h2>
 </div>
 
 <section class="site-data">
@@ -40,7 +40,6 @@ $posts = new WP_Query( $args );
             carbon_get_the_post_meta( 'site_cms' )
         );
         $rel_monitoring->monitoring();
-        
         ?>
 
     <?php endwhile; ?>

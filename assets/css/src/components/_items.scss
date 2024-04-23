@@ -10,6 +10,9 @@
     hr {
         border: 1px dashed #4419ef12;
     }
+    a {
+        color: #1876ef;
+    }
     &-list {
         border-radius: 20px;
         display: flex;
@@ -50,6 +53,24 @@
         background: abs.$smd_item-done;
         padding: 10px;
         border-radius: 5px;
+    }
+    &--title {
+        font-size: 24px;
+        font-weight: 600;
+        justify-content: center!important;
+    }
+    &--compact {
+        gap: 15px;
+        justify-content: start!important;
+        font-size: 20px;
+        .item__prop {
+            width: initial;
+        }
+    }
+    &__section {
+        margin: 10px 0px;
+        border: 1px solid #d3d3d3ce;
+        padding: 5px;
     }
 
     &-list#setup_info {
