@@ -12,11 +12,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
+$post_in = [];
+if (isset($_GET['foo'])) {
+    foreach($_GET['foo'] as $id)  array_push($post_in, $id);
+}
 $args = array(
     'post_type' => 'wbsmd_ma_links',
     'post_status' => 'publish',
-    'posts_per_page' => -1
+    'posts_per_page' => -1,
+    'post__in' => $post_in
 );
 $posts = new WP_Query( $args );
 
@@ -28,21 +32,25 @@ $posts = new WP_Query( $args );
     <h2>Протокол моніторингу актуальності інформації</h2>
 </div>
 
-<section class="site-data">
-<?php if ( $posts->have_posts() ) : ?>
-    <?php while ( $posts->have_posts() ) : ?>
-        <?php $posts->the_post(); ?>
+    <?php 
 
-        <?php 
-        
-        $rel_monitoring = new WbsmdRelevanceMonitoring(
-            the_title('', '', false),
-            carbon_get_the_post_meta( 'site_cms' )
-        );
-        $rel_monitoring->monitoring();
-        ?>
+        if (empty($_GET)) {
+            get_template_part('template-parts/relevance/settings', 'init');
+        }
+        elseif ($_GET['type'] === 'all') {
+            get_template_part('template-parts/relevance/settings', 'init');
+            get_template_part('template-parts/relevance/results', 'all');
+        }
+        elseif ($_GET['type'] === 'partially' && isset($_GET['run']) && isset($_GET['run'])) {
+            get_template_part('template-parts/relevance/settings', 'init');
+            get_template_part('template-parts/relevance/results', 'all');
+        }
+        elseif ($_GET['type'] === 'partially') {
+            get_template_part('template-parts/relevance/settings', 'init');
+        }
 
-    <?php endwhile; ?>
+    ?>
+<?php if (!empty($_GET) && $_GET['type'] === 'all') : ?>
+</div>
 <?php endif; ?>
-</section>
-<?php get_footer(); 
+<?php get_footer(); ?>

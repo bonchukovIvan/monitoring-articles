@@ -1,0 +1,37 @@
+.settings {
+
+    &-container {
+        // display: flex;
+        // justify-content: space-between;
+        // border-radius: 5px;
+        // padding: 15px;
+        // box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+    }
+
+    &__body {
+        display: flex;
+        gap: 25px;
+        box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+        padding: 10px;
+        button {
+            background: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 15px;
+            border-bottom: 1px solid #d6d6d6;
+        }
+        button:hover {
+            background: #d6d6d6;
+            cursor: pointer;
+        }
+    }
+
+}
+
+fieldset#partially-checkeded {
+    box-shadow: rgba(0, 0.8, 0.8, 0.3) 0px 2px 3px 0px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    order: 2;
+}

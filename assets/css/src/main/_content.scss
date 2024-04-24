@@ -29,6 +29,12 @@ body, button {
     }
 }
 
+.content-wrap {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 25px;
+}
+
 @media (max-width: abs.$smd_mobile) {
     .site {
         &-data {

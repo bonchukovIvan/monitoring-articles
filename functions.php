@@ -63,6 +63,15 @@ register_nav_menus([
     'main_header_menu' => 'Головне меню сайту'
 ]);
 
+add_action( 'wp_ajax_nopriv_get_data', 'my_ajax_handler' );
+add_action( 'wp_ajax_get_data', 'my_ajax_handler' );
+
+function my_ajax_handler() {
+    if (!empty($_REQUEST['foo'])) {
+        print 'Foo: '.$_REQUEST['foo'];
+    }
+    wp_die();
+}
 function wbsmd_add_theme_scripts() {
     /* 
      * include styles
@@ -77,8 +86,9 @@ function wbsmd_add_theme_scripts() {
     /* 
      * include scripts
      */
+    wp_enqueue_script( 'wp-util' );
     wp_enqueue_script( 'jquery' );
-    wp_enqueue_script( 'app', WEBSUMDU_THEME_URI . '/assets/js/app.min.js', ['jquery'] );
+    wp_enqueue_script( 'app', WEBSUMDU_THEME_URI . '/assets/js/app.min.js', ['jquery', 'wp-util'] );
 }
 
 add_action('init', 'wbsmd_custom_post_types');

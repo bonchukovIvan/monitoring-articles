@@ -93,6 +93,12 @@ body, button {
   justify-items: center;
 }
 
+.content-wrap {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 25px;
+}
+
 @media (max-width: 979px) {
   .site-data {
     display: flex;
@@ -125,8 +131,9 @@ body, button {
   flex-direction: column;
   justify-content: space-between;
   gap: 15px;
-  max-height: -moz-max-content;
-  max-height: max-content;
+}
+.item-list .item {
+  width: inherit;
 }
 .item.no-data {
   background-color: #EF4444;
@@ -273,4 +280,30 @@ body, button {
 }
 .wbsmd-cards__title h4 {
   font-size: 32px;
+}
+
+.settings__body {
+  display: flex;
+  gap: 25px;
+  box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+  padding: 10px;
+}
+.settings__body button {
+  background: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 15px;
+  border-bottom: 1px solid #d6d6d6;
+}
+.settings__body button:hover {
+  background: #d6d6d6;
+  cursor: pointer;
+}
+
+fieldset#partially-checkeded {
+  box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  order: 2;
 }
