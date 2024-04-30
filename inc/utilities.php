@@ -3,15 +3,15 @@
 trait WbsmdUtilities {
     function wbsmd_choice_item_class($result) {
 
-        if ($result < 30) {
+        if ($result <= 10) {
             return 'item--green';
         } 
     
-        elseif ($result >= 30 && $result < 90) {
-            return'item--orange';
+        elseif ($result > 10 && $result < 60) {
+            return 'item--orange';
         } 
     
-        elseif ($result > 90) {
+        elseif ($result > 60) {
             return 'item--red';
         } 
     

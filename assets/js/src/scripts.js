@@ -6,13 +6,15 @@ $(document).ready(function() {
         });
     });
     $('#all-sites-check').click(function() {
-        window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=all" );
+        const selected = $('#custom_date').find(":selected").val();
+        window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=all&custom_date="+selected );
         $(this).html("Почекайте...");
     });
 
     $('#partially-sites-check').click(function() {
         window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=partially" );
     });
+
 
     $('#partially-sites-check-run').click(function() {
         let ids = '&';
@@ -25,7 +27,10 @@ $(document).ready(function() {
         checkedIds.forEach((elem) => {
             ids += 'foo[]='+elem+'&';
         });
-        window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=partially&run=1"+ids );
+
+        const selected = $('#custom_date').find(":selected").val();
+
+        window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=partially&run=1"+ids+'custom_date='+selected );
         $(this).html("Почекайте...");
     }).prop('value', 'Save');
 

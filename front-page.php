@@ -24,19 +24,21 @@ $menu = wp_get_nav_menu_items($menuID);
 <div class="border-header">
     <h2> <?php the_title(); ?></h2>
 </div>
+
 <div class="border-header">
     <h3>Оберіть потрібний тип моніторингу нижче:</h3>
 </div>
+
 <section class="wbsmd-cards">
     <div class="wbsmd-cards__body">
         <?php foreach ($menu as $item) : ?>  
             <a href="<?php echo $item->url; ?>" class="wbsmd-cards__link">
             <div class="wbsmd-cards__item">
-                <div class="wbsmd-cards__item-body"> 
-                        <div class="wbsmd-cards__title">
-                            <h4><?php echo $item->title; ?></h4>
-                        </div>       
-                </div>                        
+                <div class="wbsmd-cards__item-body">
+                    <div class="wbsmd-cards__title">
+                        <h4><?php echo $item->title; ?></h4>
+                    </div>
+                </div>
             </div>
             </a> 
         <?php endforeach; ?>

@@ -1,13 +1,19 @@
 .settings {
 
-    &-container {
-        // display: flex;
-        // justify-content: space-between;
-        // border-radius: 5px;
-        // padding: 15px;
-        // box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+    &__selected {
+        display: flex;
+        align-items: center;
+        select {
+            border: none;
+            padding: 0 1em 0 0;
+            margin: 0;
+            width: 100%;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            line-height: inherit;
+        }
     }
-
     &__body {
         display: flex;
         gap: 25px;

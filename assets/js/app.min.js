@@ -15,7 +15,8 @@ $(document).ready(function () {
     });
   });
   $('#all-sites-check').click(function () {
-    window.location.href = window.location.href.replace(/[\?#].*|$/, "?type=all");
+    var selected = $('#custom_date').find(":selected").val();
+    window.location.href = window.location.href.replace(/[\?#].*|$/, "?type=all&custom_date=" + selected);
     $(this).html("Почекайте...");
   });
   $('#partially-sites-check').click(function () {
@@ -32,7 +33,8 @@ $(document).ready(function () {
     checkedIds.forEach(function (elem) {
       ids += 'foo[]=' + elem + '&';
     });
-    window.location.href = window.location.href.replace(/[\?#].*|$/, "?type=partially&run=1" + ids);
+    var selected = $('#custom_date').find(":selected").val();
+    window.location.href = window.location.href.replace(/[\?#].*|$/, "?type=partially&run=1" + ids + 'custom_date=' + selected);
     $(this).html("Почекайте...");
   }).prop('value', 'Save');
   $('#select-all').click(function (event) {

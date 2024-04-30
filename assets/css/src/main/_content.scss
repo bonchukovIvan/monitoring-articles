@@ -1,4 +1,11 @@
 @use '../abstracts/' as abs;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body, button {
     font-size: abs.$smd_font-size;
     font-family: abs.$smd_font-family;

@@ -113,6 +113,12 @@ table {
   text-decoration: underline;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body, button {
   font-size: 18px;
   font-family: "Lora", serif;
@@ -249,7 +255,7 @@ body, button {
   font-weight: normal;
 }
 .item__prop {
-  width: 60%;
+  width: 30%;
   text-align: end;
 }
 .item__more-section {
@@ -330,6 +336,20 @@ body, button {
   font-size: 32px;
 }
 
+.settings__selected {
+  display: flex;
+  align-items: center;
+}
+.settings__selected select {
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  line-height: inherit;
+}
 .settings__body {
   display: flex;
   gap: 25px;

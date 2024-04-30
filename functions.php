@@ -16,6 +16,8 @@ function crb_load() {
 }
 // Register custom fields for the 'wbsmd_ma_links' post type
 add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields');
+add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields_mk_faculty');
+add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields_mk_type');
 
 function wbsmd_register_custom_fields() {
     // Define the field container
@@ -29,6 +31,63 @@ function wbsmd_register_custom_fields() {
         ));
 }
 
+function wbsmd_register_custom_fields_mk_faculty() {
+    // Define the field container
+    Container::make('post_meta', __('Факультет', 'textdomain'))
+        ->where('post_type', 'IN', array('wbsmd_mk_links', 'wbsmd_mk_value') )
+        ->add_fields(array(
+            Field::make('radio', 'mk_site_faculty', __('Оберіть факультет', 'textdomain'))->add_options( array(
+                'all'   => 'Загальний',
+                'teset' => 'TESET',
+                'elit'  => 'ELIT',
+                'biem'  => 'BIEM',
+                'ifsk'  => 'IFSK',
+                'nnip'  => 'NNIP',
+                'nnmi'  => 'NNMI',
+            ))
+        ));
+}
+
+function wbsmd_register_custom_fields_mk_type() {
+    // Define the field container
+    Container::make('post_meta', __('Тип', 'textdomain'))
+        ->where('post_type', '=', 'wbsmd_mk_links' )
+        ->add_fields(array(
+            Field::make('radio', 'mk_site_type', __('Оберіть тип сайту', 'textdomain'))->add_options( array(
+                'faculty'   => 'Інституту/факультету',
+                'graduation' => 'Випускова',
+                'non-graduation'  => 'Невипускова',
+            ))
+        ));
+}
+add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields_mk_type_value');
+function wbsmd_register_custom_fields_mk_type_value() {
+    // Define the field container
+    Container::make('post_meta', __('Тип', 'textdomain'))
+        ->where('post_type', '=', 'wbsmd_mk_value' )
+        ->add_fields(array(
+            Field::make( 'checkbox', 'mk_site_check_faculty', 'Інституту/факультету' )
+                ->set_option_value( 'yes' ),
+            Field::make( 'checkbox', 'mk_site_check_graduation', 'Випускова' )
+                ->set_option_value( 'yes' ),
+            Field::make( 'checkbox', 'mk_site_check_non-graduation', 'Невипускова' )
+                ->set_option_value( 'yes' ),
+        ));
+}
+
+function wbsmd_register_custom_fields_mk_value() {
+    // Define the field container
+    Container::make('post_meta', __('Значення для пошуку', 'textdomain'))
+        ->where('post_type', 'IN', array('wbsmd_mk_value'))
+        ->add_fields(array(
+            Field::make('complex', 'mk_site_values', __('Додайте значення до групи', 'textdomain'))
+                ->add_fields(array(
+                    Field::make('text', 'mk_site_value', __('Значення', 'textdomain')),
+                ))
+                ->set_header_template('<%- mk_site_value %>'), // Use field name as a template for the collapsed header
+        ));
+}
+add_action('carbon_fields_register_fields', 'wbsmd_register_custom_fields_mk_value');
 function wbsmd_custom_post_types() {
 	register_post_type('wbsmd_ma_links',
 		array(
@@ -53,6 +112,52 @@ function wbsmd_custom_post_types() {
                 )    
 		)
 	);
+    register_post_type('wbsmd_mk_links',
+    array(
+        'labels'      => array(
+            'name'          => __('Сайти [МК]', 'textdomain'),
+            'singular_name' => __('Сайт [МК]', 'textdomain'),
+            'add_new'       => __('Додати новий сайт', 'textdomain'),
+            'add_new_item'  => __('Додати новий сайт', 'textdomain'),
+            'edit_item'     => __('Редагувати сайт', 'textdomain'),
+            'new_item'      => __('Новий сайт', 'textdomain'),
+            'view_item'     => __('Переглянути сайт', 'textdomain'), 
+            'search_items'  => __('Шукати сайти', 'textdomain'),
+            'not_found'     => __('Сайтів не знайдено', 'textdomain'), 
+            'not_found_in_trash' => __('Сайтів у кошику не знайдено', 'textdomain'), 
+            'parent_item_colon'  => __('Батьківський сайт:', 'textdomain'),
+            'menu_name'     => __('Сайти [МК]', 'textdomain'), 
+        ),
+            'public'      => true,
+            'has_archive' => false,
+            'supports' => array(
+                'title',
+            )    
+        )
+    );
+    register_post_type('wbsmd_mk_value',
+    array(
+        'labels'      => array(
+            'name'          => __('Групи значень [МК]', 'textdomain'),
+            'singular_name' => __('Група [МК]', 'textdomain'),
+            'add_new'       => __('Додати нову групу', 'textdomain'),
+            'add_new_item'  => __('Додати нову групу', 'textdomain'),
+            'edit_item'     => __('Редагувати групу', 'textdomain'),
+            'new_item'      => __('Нову групу', 'textdomain'),
+            'view_item'     => __('Переглянути групу', 'textdomain'), 
+            'search_items'  => __('Шукати групи значень', 'textdomain'),
+            'not_found'     => __('Груп не знайдено', 'textdomain'), 
+            'not_found_in_trash' => __('Груп у кошику не знайдено', 'textdomain'), 
+            'parent_item_colon'  => __('Батьківська група :', 'textdomain'),
+            'menu_name'     => __('Групи значень [МК]', 'textdomain'), 
+        ),
+            'public'      => true,
+            'has_archive' => false,
+            'supports' => array(
+                'title',
+            )    
+        )
+    );
 }
 
 function wbsmd_get_error_message() {

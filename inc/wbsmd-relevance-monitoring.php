@@ -20,7 +20,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         /*
          *  Endpoint for joomla sites
          */
-        const JOOMLA_ENDPOINT = 'index.php?option=com_ajax&plugin=ajaxarticles&format=json';
+        const JOOMLA_ENDPOINT = 'index.php?option=com_ajax&plugin=ajaxarticles&format=json&custom_date=';
 
     	/**
 		 * Site link for check relevance posts.
@@ -50,6 +50,23 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         protected $endpoint = '';
 
         /**
+		 * The method for request to site endpoint.
+		 *
+		 * @access protected
+		 * @since 1.0.0
+		 * @var string
+		 */
+        protected $method = 'GET';
+        /**
+		 * The date of start monitoring period.
+		 *
+		 * @access protected
+		 * @since 1.0.0
+		 * @var string
+		 */
+        protected  $custom_date = 'first day of january this year';
+
+        /**
 		 * The data from current site.
 		 *
 		 * @access protected
@@ -59,20 +76,27 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         protected $data = [];
     
         function __construct(
-            string $link, 
-            string $site_cms
+                string $link, 
+                string $site_cms,
+                string $custom_date = '',
             ) {
             $this->link = $link;
             $this->site_cms = $site_cms;
+            
+            if ($custom_date != '') {
+                $this->custom_date = $custom_date;
+            }
 
             switch($this->site_cms) {
                 case 'jml':
-                    $this->endpoint = self::JOOMLA_ENDPOINT;
+                    $this->endpoint = self::JOOMLA_ENDPOINT . urlencode($this->custom_date);
                     break;
                 case 'wp':
                     $this->endpoint = self::WORDPRESS_ENDPOINT;
+                    $this->method = 'POST';
                     break;
             }
+
         }
         
         function get_data() {
@@ -81,9 +105,9 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 
         function get_request() {
             $curl  = curl_init();
-    
+
             $url = $this->link . $this->endpoint;
-    
+            
             curl_setopt_array( $curl, [
                 CURLOPT_URL            => $url,
                 CURLOPT_RETURNTRANSFER => true,
@@ -92,16 +116,22 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                 CURLOPT_TIMEOUT        => 30,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2TLS,
-                CURLOPT_CUSTOMREQUEST  => 'GET',
+                CURLOPT_CUSTOMREQUEST  => $this->method,
                 CURLOPT_HTTPHEADER     => [
-                    'Accept: application/vnd.api+json',
                     'Content-Type: application/json',
                 ],
             ]);
+            if ($this->site_cms === 'wp') {
+                $post_data = json_encode([
+                    'custom_date' => $this->custom_date
+                ]);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data); 
+            }
+
+            $response = json_decode( curl_exec( $curl ) );
 
             curl_close( $curl );
 
-            $response = json_decode( curl_exec( $curl ) );
             if ($this->site_cms === 'wp' && isset($response->data->status)) {
                 return false;
             }
@@ -181,19 +211,35 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         
             if ( count($data) != 1 ) {
                 $counter = $this->wbsmd_dates_check($data);
-                $result = $this->wbsmd_convert_to_percents($counter, count($data)-1);
-                $class = $this->wbsmd_choice_item_class($result);
+                $percentage = $this->wbsmd_convert_to_percents($counter, count($data)-1);
+                $class = $this->wbsmd_choice_item_class($percentage);
+                
+                $result = 0;
+
+                if ($percentage <= 10) {
+                    $result = 1;
+                } 
             
+                elseif ($percentage > 10 && $percentage < 60) {
+                    $result = 0.5;
+                } 
+            
+                elseif ($percentage > 60) {
+                    $result = 0;
+                } 
+
                 $this->display_item_group(
-                    'Кількість порушень режиму публікації новин (10 днів):', 
-                    $counter.' з '.count($data)-1 . '[' . $result .'%]',
+                    'Кількість порушень режиму публікації (10 днів):', 
+                    $counter.' з '.count($data)-1 . '[ ' . $result .' ]',
                     $class
                 );
+
                 $this->display_item_group(
                     'Крайня публікація: <span>'.$data[0]->title.'</span>', 
                     $data[0]->created,
                     $last_class
                 );
+                
             } else {
                 $this->display_item_group(
                     'Знайдено 1 запис: <span>'.$data[0]->title.'</span>', 
