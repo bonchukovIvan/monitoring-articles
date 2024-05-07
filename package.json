@@ -1,7 +1,6 @@
 {
   "name": "sumdumonitoring",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "development": "mix",
@@ -9,7 +8,7 @@
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "hot": "mix watch --hot",
     "production": "mix --production"
-},
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bonchukovIvan/monitoring-articles.git"
@@ -27,5 +26,7 @@
     "resolve-url-loader": "^5.0.0",
     "sass": "^1.75.0",
     "sass-loader": "^12.6.0"
-  }
+  },
+  "dependencies": {},
+  "description": ""
 }

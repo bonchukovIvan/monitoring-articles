@@ -136,5 +136,12 @@
 @media (max-width: abs.$smd_mobile) {
     .item {
         width: inherit;
+        &__prop {
+            width: 50%;
+        }
+        &__group.item--compact {
+            flex-direction: column;
+            font-size: 16px;
+        }
     }
 }

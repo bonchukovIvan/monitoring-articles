@@ -5,15 +5,15 @@ trait WbsmdUtilities {
 
         if ($result <= 10) {
             return 'item--green';
-        } 
+        }
     
-        elseif ($result > 10 && $result < 60) {
+        elseif ($result > 10 && $result <= 40) {
             return 'item--orange';
-        } 
+        }
     
-        elseif ($result > 60) {
+        elseif ($result > 40) {
             return 'item--red';
-        } 
+        }
     
         return null;
     }

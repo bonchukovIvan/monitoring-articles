@@ -78,7 +78,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         function __construct(
                 string $link, 
                 string $site_cms,
-                string $custom_date = '',
+                string $custom_date = ''
             ) {
             $this->link = $link;
             $this->site_cms = $site_cms;
@@ -208,6 +208,10 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $last_class = (strtotime($data[0]->created) > strtotime('-10days')) 
             ? 'item--green' 
             : 'item--red' ;
+
+            $last_result = (strtotime($data[0]->created) > strtotime('-10days')) 
+            ? 1 
+            : 0 ;
         
             if ( count($data) != 1 ) {
                 $counter = $this->wbsmd_dates_check($data);
@@ -220,17 +224,23 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     $result = 1;
                 } 
             
-                elseif ($percentage > 10 && $percentage < 60) {
+                elseif ($percentage > 10 && $percentage <= 40) {
                     $result = 0.5;
                 } 
             
-                elseif ($percentage > 60) {
+                elseif ($percentage > 40) {
                     $result = 0;
                 } 
 
                 $this->display_item_group(
+                    'Коефіцієнт актуальності:', 
+                    '<span>'. $result .'</span>',
+                    $class
+                );
+
+                $this->display_item_group(
                     'Кількість порушень режиму публікації (10 днів):', 
-                    $counter.' з '.count($data)-1 . '[ ' . $result .' ]',
+                    $counter.' з '.count($data)-1 . ' [' . $percentage .'%]',
                     $class
                 );
 
@@ -241,6 +251,11 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                 );
                 
             } else {
+                $this->display_item_group(
+                    'Коєфіцієнт актуальності:',
+                    '<span>'. $last_result .'</span>',
+                    $last_class
+                );
                 $this->display_item_group(
                     'Знайдено 1 запис: <span>'.$data[0]->title.'</span>', 
                     $data[0]->created,
@@ -287,6 +302,11 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     $this->display_item_group(
                         $this->get_cat_title( $key ),
                         ''
+                    ); 
+                    $this->display_item_group(
+                        'Коефіцієнт актуальності:', 
+                        '<span>0</span>',
+                        'item--red'
                     );
                     $this->display_item_group(
                         'Виникла помилка:',
