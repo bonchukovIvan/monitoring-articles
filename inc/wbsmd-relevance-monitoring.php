@@ -212,8 +212,33 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $last_result = (strtotime($data[0]->created) > strtotime('-10days')) 
             ? 1 
             : 0 ;
-        
-            if ( count($data) != 1 ) {
+
+  
+            if ( count($data) == 1 ) {
+                $this->display_item_group(
+                    'Коєфіцієнт актуальності:',
+                    '<span>'. $last_result .'</span>',
+                    $last_class
+                );
+                $this->display_item_group(
+                    'Знайдено 1 запис: <span>'.$data[0]->title.'</span>', 
+                    $data[0]->created,
+                    $last_class
+                );
+            }
+            elseif ( count($data) != 1 && count($data) < 15)  {
+                $this->display_item_group(
+                    'Коєфіцієнт актуальності:',
+                    '<span>'. 0 .'</span>',
+                    'item--red'
+                );
+                $this->display_item_group(
+                    'Кількість записів менша за встановлений мінімум: <span>', 
+                    '<span>' . count($data).'</span>',
+                    'item--red'
+                );
+            }
+            elseif ( count($data) != 1 && count($data) > 15) {
                 $counter = $this->wbsmd_dates_check($data);
                 $percentage = $this->wbsmd_convert_to_percents($counter, count($data)-1);
                 $class = $this->wbsmd_choice_item_class($percentage);
@@ -240,7 +265,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 
                 $this->display_item_group(
                     'Кількість порушень режиму публікації (10 днів):', 
-                    $counter.' з '.count($data)-1 . ' [' . $percentage .'%]',
+                    '<span>'.$counter.' з '.(count($data)-1) . ' [' . $percentage .'%]</span>',
                     $class
                 );
 
@@ -249,19 +274,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     $data[0]->created,
                     $last_class
                 );
-                
-            } else {
-                $this->display_item_group(
-                    'Коєфіцієнт актуальності:',
-                    '<span>'. $last_result .'</span>',
-                    $last_class
-                );
-                $this->display_item_group(
-                    'Знайдено 1 запис: <span>'.$data[0]->title.'</span>', 
-                    $data[0]->created,
-                    $last_class
-                );
-            }
+            } 
             echo '<hr>';
         }
 

@@ -35,7 +35,29 @@ $posts = new WP_Query( $args );
 <div class="border-header">
     <h2>Протокол моніторингу актуальності інформації</h2>
 </div>
-
+    <div class="item">
+        <div class="item__section">
+            <div class="item__group item--title">
+                <div class="item__prop-name">Легенда</div>
+            </div>
+            <div class="item__group">
+                <div class="item__prop-name">Мінімальна кількість публікацій за період: </div>
+                <div class="item__prop">15</div>
+            </div>
+            <div class="item__group item--green">
+                <div class="item__prop-name">Коєфіцієнт актуальності: 1</div>
+                <div class="item__prop">кількість порушень <= 10%</div>
+            </div>
+            <div class="item__group item--orange">
+                <div class="item__prop-name">Коєфіцієнт актуальності: 0.5</div>
+                <div class="item__prop">кількість порушень > 10%та кількість порушень <= 40%</div>
+            </div>
+            <div class="item__group item--red">
+                <div class="item__prop-name">Коєфіцієнт актуальності: 0</div>
+                <div class="item__prop">кількість порушень > 40%</div>
+            </div>
+        </div>
+    </div>
     <?php 
 
         if (empty($_GET)) {
