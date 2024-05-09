@@ -8,6 +8,8 @@ define('WEBSUMDU_THEME_URI', get_template_directory_uri());
 define('WEBSUMDU_THEME_PATH', get_template_directory());
 
 require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-relevance-monitoring.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-html-builder.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-http.php';
 
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
@@ -160,6 +162,9 @@ function wbsmd_custom_post_types() {
     );
 }
 
+function display_array($arr) {
+    echo '<pre>' . print_r($arr, 1) . '</pre>';
+}
 function wbsmd_get_error_message() {
     return 'Інформація відсутня ;^(';
 }

@@ -21,6 +21,9 @@ trait WbsmdUtilities {
     function wbsmd_convert_to_percents($f, $s) {
         return number_format((float)($f/$s)*100, 2, '.', '');
     }
+    function wbsmd_calculate_number_of_months($f, $s) {
+        return number_format((float)($f/$s)*100, 2, '.', '');
+    }
 
     function wbsmd_dates_check($data) {
         if (!$data) {
