@@ -60,8 +60,6 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $this->minimal_posts_count = $months * $this->minimal_posts_per_months;
         }
 
-        
-
         function monitoring() {
             $result = [];
             $result['link'] = $this->link;
@@ -91,21 +89,40 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             if (is_object($data)) {
                 return $this->handle_error($data->error);
             }
+            $all_er = $this->wbsmd_dates_check($data);
+            $percentage = $this->wbsmd_convert_to_percents($all_er, count($data));
             $category_data = [
-                // 'coefficient' => $this->get_coefficient($data),
-                // 'percentage'  => wbsmd_convert_to_percents,
+                'coefficient' => $this->get_coefficient($data, $percentage),
+                'percentage'  => $percentage,
+                'all_er'  => $all_er,
                 'post_count'  => count($data),
                 'last_post'   => [ 'title' => $data[0]->title, 'created' => $data[0]->created ],
             ];
             return $category_data;
         }
         
-        function get_coefficient( $data ) {
+        function get_coefficient( $data, $percentage ) {
+            if ( count($data) == 1 ) {
+                if (strtotime($data[0]->created) > strtotime('-10days')) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
             if ( count($data) != 1 && count($data) < $this->minimal_posts_count ) {
                 return 0;
             }
-
+            if ($percentage <= 10) {
+                return 1;
+            }
+            elseif ($percentage > 10 && $percentage <= 40) {
+                return 0.5;
+            }
+            elseif ($percentage > 40) {
+                return 0;
+            }
         }
+
         function handle_error( $err ) {
             return ['error' => $this->get_error_message( $err )];
         }
@@ -126,6 +143,5 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             }
             return $error;
         }
-
     }
 }

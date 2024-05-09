@@ -2,19 +2,15 @@
 
 trait WbsmdUtilities {
     function wbsmd_choice_item_class($result) {
-
         if ($result <= 10) {
             return 'item--green';
         }
-    
         elseif ($result > 10 && $result <= 40) {
             return 'item--orange';
         }
-    
         elseif ($result > 40) {
             return 'item--red';
         }
-    
         return null;
     }
     
