@@ -1,6 +1,12 @@
 <?php
 
 trait WbsmdUtilities {
+
+    function geometric_average($a) {  
+        foreach($a as $i=>$n) $mul = $i == 0 ? $n : $mul*$n;  
+        return pow($mul,1/count($a));  
+    }
+
     function wbsmd_choice_item_class($result) {
         if ($result <= 10) {
             return 'item--green';
