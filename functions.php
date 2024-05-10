@@ -7,7 +7,16 @@ define('WEBSUMDU_THEME_URI', get_template_directory_uri());
 
 define('WEBSUMDU_THEME_PATH', get_template_directory());
 
+define('WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS', 3);
+
+define("WBSMD_GREEN_ITEM","item--green");
+
+define("WBSMD_ORANGE_ITEM","item--orange");
+
+define("WBSMD_RED_ITEM","item--red");
+
 require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-relevance-monitoring.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-localization-helper.php';
 require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-html-builder.php';
 require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-http.php';
 

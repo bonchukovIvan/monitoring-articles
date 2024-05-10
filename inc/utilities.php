@@ -7,18 +7,7 @@ trait WbsmdUtilities {
         return pow($mul,1/count($a));  
     }
 
-    function wbsmd_choice_item_class($result) {
-        if ($result <= 10) {
-            return 'item--green';
-        }
-        elseif ($result > 10 && $result <= 40) {
-            return 'item--orange';
-        }
-        elseif ($result > 40) {
-            return 'item--red';
-        }
-        return null;
-    }
+
     
     function wbsmd_convert_to_percents($f, $s) {
         return number_format((float)($f/$s)*100, 2, '.', '');

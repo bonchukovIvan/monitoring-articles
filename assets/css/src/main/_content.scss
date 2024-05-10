@@ -15,6 +15,9 @@ body, button {
     font-family: abs.$smd_font-family;
     line-height: abs.$smd_line-heigth;
 }
+hr {
+    border: 2px dashed rgba(68, 25, 239, 0.0705882353);
+}
 
 .wrapper {
     max-width: 1500px;

@@ -44,7 +44,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 		 * @since 1.0.0
 		 * @var array
 		 */
-        protected $minimal_posts_per_months = 3;
+        protected $minimal_posts_per_months = WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS;
 
         use WbsmdUtilities;
     
@@ -64,7 +64,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $result = [];
             $result['link'] = $this->link;
             if ( empty($this->data) ) {
-                $result['result'] = ['error' => 'empty_data'];
+                $result['result'] = ['error' => 'empty_data :('];
                 return $result;
             }
             unset( $this->data['setup_info'] );
@@ -74,7 +74,6 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         }
 
         function check_categories() {
-
             $news   = $this->check_category($this->data['news']);
             $events = $this->check_category($this->data['events']);
             $values = [$news['coefficient'], $events['coefficient']];
@@ -97,7 +96,6 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     'events' => $eng_events,
                     ]
                 ];
-            
         }
 
         function check_category( $data ) {
@@ -112,14 +110,16 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $category_data = [
                 'coefficient' => $this->get_coefficient( $data, $percentage ),
                 'percentage'  => $percentage,
-                'errors'  => ['posts_count'  => $posts_count, 'errors_count'  => $errors_count],
+                'posts_count'  => $posts_count,
+                'errors_count'  => $errors_count,
                 'last_post'   => ['title' => $data[0]->title, 'created' => $data[0]->created],
+                'minimal_posts_count'   => $this->minimal_posts_count,
             ];
 
             return $category_data;
         }
         
-        function get_coefficient( $data, $percentage ) {
+        private function get_coefficient( $data, $percentage ) {
             $posts_count = count($data);
             switch (true) {
                 // if data have only 1 post check created
@@ -136,19 +136,19 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                     return 0.5;
                 case $percentage > 40:
                     return 0;
-                default: 
+                default:
                     return 0;
             }
         }
 
-        function handle_error( $err ) {
+        private function handle_error( $err ) {
             return [
                 'error' => $this->get_error_message( $err ),
                 'coefficient' => 0
             ];
         }
 
-        function get_error_message( $err ) {
+        private function get_error_message( $err ) {
             switch( $err ) {
                 case 'category_not_found':
                     $error = 'Категорія з заданим аліасом не знайдена :(';
