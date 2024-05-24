@@ -1,17 +1,50 @@
+@use '../abstracts/' as abs;
+
 .wbsmd {
     &-header {
         position: relative;
         z-index: 9999;
         background-color: #fff;
     }
+
     &-header__body {
-        border-bottom: 2px dashed #f7f7f7;
-        padding: 25px 25px;
+        border-bottom: 2px dashed abs.$smd_orange;
+        padding: 10px 10px;
+        display: flex;
+        gap: 10px;
+        background-color: abs.$smd_blue;
     }
     &-header__body h1 {
         font-size: 32px;
         font-weight: 700;
         text-align: center;
+    }
+
+    &-header__logo {
+        height: 75px;
+    }
+    &-header__logo img {
+        height: 100%;
+        width: 100%;
+    }
+
+    &-header__menu-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: center;
+    }
+    &-header__menu.wbsmd-menu {
+        display: flex;
+        gap: 25px;
+        font-size: 18px;
+    }
+    &-header__menu.wbsmd-menu a {
+        text-decoration: none;
+        color: #fff;
+    }
+    &-header__menu.wbsmd-menu a:hover {
+        text-decoration: underline;
     }
 }
 

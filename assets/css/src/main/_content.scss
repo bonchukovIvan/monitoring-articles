@@ -1,7 +1,30 @@
 @use '../abstracts/' as abs;
-body {
-    font-size: 16px;
-    font-family: "Roboto", sans-serif;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+a {
+    font-size: inherit;
+    color: inherit;
+    text-decoration: none;
+}
+body, button {
+    font-size: abs.$smd_font-size;
+    font-family: abs.$smd_font-family;
+    line-height: abs.$smd_line-heigth;
+}
+hr {
+    border: 2px dashed rgba(68, 25, 239, 0.0705882353);
+}
+sup {
+    top: -0.5em;
+}
+sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
 }
 
 .wrapper {
@@ -23,9 +46,15 @@ body {
         grid-template-columns: 1fr;
         gap: 25px;
         padding: 25px 0px;
-        border-top: 2px dashed #4419ef;
+        border-top: 2px dashed abs.$smd_blue;
         justify-items: center;
     }
+}
+
+.content-wrap {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 25px;
 }
 
 @media (max-width: abs.$smd_mobile) {
@@ -34,5 +63,10 @@ body {
             display: flex;
             flex-direction: column;
         }
+    }
+
+    .content-wrap {
+        display: flex;
+        flex-direction: column-reverse;
     }
 }

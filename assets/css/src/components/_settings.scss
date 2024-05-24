@@ -1,0 +1,57 @@
+@use '../abstracts/' as abs;
+
+.settings {
+
+    &__selected {
+        display: flex;
+        align-items: center;
+        select {
+            border: none;
+            padding: 15px;
+            margin: 0;
+            width: 100%;
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
+            line-height: inherit;
+            border-bottom: 1px solid #d6d6d6;
+            text-align: center;
+        }
+    }
+    &__body {
+        display: flex;
+        gap: 25px;
+        box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+        padding: 10px;
+        border-radius: 5px;
+        button {
+            background: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 15px;
+            border-bottom: 1px solid #d6d6d6;
+        }
+        button:hover {
+            background: #d6d6d6;
+            cursor: pointer;
+        }
+    }
+
+}
+
+fieldset#partially-checkeded {
+    box-shadow: rgba(0, 0.8, 0.8, 0.3) 0px 2px 3px 0px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    order: 2;
+}
+
+@media (max-width: abs.$smd_mobile) {
+    .settings {
+        &__body {
+            flex-direction: column;
+            padding: 10px 15px 30px 15px;
+        }
+    }
+}
