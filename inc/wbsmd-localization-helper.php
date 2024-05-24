@@ -3,11 +3,11 @@
 class WbsmdLocalizationHelper {
     public static function choice_item_class($percentage) {
         switch (true) {
-            case $percentage <= 10:
+            case $percentage <= 20:
                 return WBSMD_GREEN_ITEM;
-            case $percentage > 10 && $percentage <= 40:
+            case $percentage > 20 && $percentage <= 50:
                 return WBSMD_ORANGE_ITEM;
-            case $percentage > 40:
+            case $percentage > 50:
                 return WBSMD_RED_ITEM;
             default:
                 return null;

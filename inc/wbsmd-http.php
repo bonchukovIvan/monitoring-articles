@@ -83,9 +83,12 @@ if ( ! class_exists('WbsmdHttp') ) {
 				$body = json_encode( ['custom_date' => $this->custom_date] );
 				$response = $this->post_request($this->link, $body);
 			}
+
+			if (!is_array($response->data)) {
+				return [];
+			}
 			
-			$data = (array) $response->data[0];
-			return $data;
+			return (array) $response->data[0];
 		}
 
 		public function get_request($url) {

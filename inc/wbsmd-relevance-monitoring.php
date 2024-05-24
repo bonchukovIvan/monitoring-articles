@@ -64,7 +64,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $result = [];
             $result['link'] = $this->link;
             if ( empty($this->data) ) {
-                $result['result'] = ['error' => 'empty_data :('];
+                $result['result'] = ['error' => 'Плагін не встановлено або сталась непередбачувана помилка :^('];
                 return $result;
             }
             unset( $this->data['setup_info'] );
@@ -74,28 +74,36 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         }
 
         function check_categories() {
-            $news   = $this->check_category($this->data['news']);
-            $events = $this->check_category($this->data['events']);
-            $values = [$news['coefficient'], $events['coefficient']];
-            $uk_final_coefficient = array_sum($values) / count($values);
-
-            $eng_news   = $this->check_category($this->data['eng_news']);
-            $eng_events = $this->check_category($this->data['eng_events']);
-
-            $values = [$eng_news['coefficient'], $eng_events['coefficient']];
-            $eng_final_coefficient = array_sum($values) / count($values);
             return [
-                'uk' => [
-                    'final_coefficient' => $uk_final_coefficient,
+                'uk' => $this->check_site_section([
+                    'news' => $this->data['news'],
+                    'events' => $this->data['events']
+                ]),
+                'eng' => $this->check_site_section([
+                    'news' => $this->data['eng_news'],
+                    'events' => $this->data['eng_events']
+                ]),
+            ];
+        }
+
+        function check_site_section( array $data ) {
+            if (!$this->check_category_exist($data['events'])) {
+                return [ 'final_coefficient' => 0 ];
+            }
+            $events = $this->check_category($data['events']);
+            $news   = $this->check_category($data['news']);
+            return [
+                    'final_coefficient' => $news['coefficient'],
                     'news' => $news,
                     'events' => $events,
-                ],
-                'eng' => [
-                    'final_coefficient' => $eng_final_coefficient,
-                    'news' => $eng_news,
-                    'events' => $eng_events,
-                    ]
                 ];
+        }
+
+        function check_category_exist( $data ) {
+            if ( is_object($data) ) {
+                return false;
+            }
+            return true;
         }
 
         function check_category( $data ) {
@@ -130,11 +138,11 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
                 // if posts count less then minimal posts count
                 case $posts_count != 1 && $posts_count < $this->minimal_posts_count:
                     return 0;
-                case $percentage <= 10:
+                case $percentage <= 20:
                     return 1;
-                case $percentage > 10 && $percentage <= 40:
+                case $percentage > 20 && $percentage <= 50:
                     return 0.5;
-                case $percentage > 40:
+                case $percentage > 50:
                     return 0;
                 default:
                     return 0;

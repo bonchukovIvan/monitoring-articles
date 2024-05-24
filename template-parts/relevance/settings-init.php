@@ -24,15 +24,15 @@ $minimal_posts_count = $months * WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS;
     <div class="item__section">
         <div class="item__group item--green">
             <div class="item__prop-name">Коєфіцієнт актуальності: 1</div>
-            <div class="item__prop">кількість порушень <= 10%</div>
+            <div class="item__prop">кількість порушень <= 20%</div>
         </div>
         <div class="item__group item--orange">
             <div class="item__prop-name">Коєфіцієнт актуальності: 0.5</div>
-            <div class="item__prop">кількість порушень > 10%та кількість порушень <= 40%</div>
+            <div class="item__prop">кількість порушень > 20%та кількість порушень <= 50%</div>
         </div>
         <div class="item__group item--red">
             <div class="item__prop-name">Коєфіцієнт актуальності: 0</div>
-            <div class="item__prop">кількість порушень > 40%</div>
+            <div class="item__prop">кількість порушень > 50%</div>
         </div>
     </div>
 </div>
@@ -49,7 +49,10 @@ $minimal_posts_count = $months * WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS;
         <?php endif; ?>  
         <div class="settings__selected">
             <select name="custom_date" id="custom_date">
-                <option value="first day of january this year" selected>Початок року</option>
+                <option value="first day of december previous year" selected>1 грудня минулого року</option>
+                <option value="first day of january this year" 
+                <?php if ($is_date && $_GET['custom_date'] === "first day of january this year") echo 'selected'?>
+                >Початок року</option>
                 <option value="first day of june this year"
                 <?php if ($is_date && $_GET['custom_date'] === "first day of june this year") echo 'selected'?>
                 >Середина року (1 червня)</option>
