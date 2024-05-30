@@ -35,7 +35,6 @@ $posts = new WP_Query( $args );
 <div class="border-header">
     <h2>Протокол моніторингу актуальності інформації</h2>
 </div>
-   
     <?php 
         if (empty($_GET)) {
             get_template_part('template-parts/relevance/settings', 'init');
@@ -46,6 +45,16 @@ $posts = new WP_Query( $args );
                 'custom_date' => $custom_date
             ]);
         }
+        elseif ($_GET['type'] === 'save') {
+            get_template_part('template-parts/relevance/settings', 'init');
+            get_template_part('template-parts/relevance/results', 'save', [
+                'custom_date' => $custom_date
+            ]);
+        }
+        elseif ($_GET['type'] === 'saved') {
+            get_template_part('template-parts/relevance/settings', 'init');
+            get_template_part('template-parts/relevance/results', 'saved');
+        }
         elseif ($_GET['type'] === 'partially' && isset($_GET['run']) && isset($_GET['run'])) {
             get_template_part('template-parts/relevance/settings', 'init');
             get_template_part('template-parts/relevance/results', 'all',[
@@ -55,7 +64,6 @@ $posts = new WP_Query( $args );
         elseif ($_GET['type'] === 'partially') {
             get_template_part('template-parts/relevance/settings', 'init');
         }
-
     ?>
 <?php if (!empty($_GET) && $_GET['type'] === 'all') : ?>
 </div>

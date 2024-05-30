@@ -60,6 +60,66 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
             $this->minimal_posts_count = $months * $this->minimal_posts_per_months;
         }
 
+        static function create_relevance_group(string $group_name = 'no_name') {
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'relevance_monitoring_group';
+
+            $existing_link = $wpdb->get_var($wpdb->prepare(
+                "SELECT group_name FROM $table_name WHERE group_name = %s",
+                $group_name
+            ));
+            if ($existing_link) {
+                return [
+                    'success' => false,
+                    'errors' => 'value_exist' 
+                ];
+            }
+            $wpdb->insert(
+                $table_name,
+                ['group_name' => $group_name],
+                ['%s']
+            );
+            if ($wpdb->last_error) {
+                error_log("Error creating relevance_monitoring table: " . $wpdb->last_error);
+                return [
+                    'success' => false,
+                    'errors' => $wpdb->last_error
+                ];
+            }
+            return [
+                'success' => true,
+                'group_id' => $wpdb->insert_id
+            ];
+        }
+
+        static function save_result_to_db($group_id, $result) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'relevance_monitoring';
+
+            $wpdb->insert(
+                $table_name,
+                [
+                    'group_id' => $group_id,
+                    'link' => $result['link'],
+                    'result' => wp_json_encode($result)
+                ],
+                [
+                    '%d',
+                    '%s',
+                    '%s'
+                ]
+            );
+            
+            if ($wpdb->last_error) {
+                error_log("Error creating relevance_monitoring table: " . $wpdb->last_error);
+                return [
+                    'success' => false,
+                    'errors' => $wpdb->last_error
+                ];
+            }
+            return true;
+        }
+
         function monitoring() {
             $result = [];
             $result['link'] = $this->link;

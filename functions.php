@@ -216,3 +216,44 @@ add_action( 'wp_enqueue_scripts', 'wbsmd_add_theme_scripts' );
 add_theme_support( 'custom-logo' );
 add_theme_support( 'post-thumbnails' );
 add_theme_support('menus');
+
+function create_relevance_monitoring_group_table() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'relevance_monitoring_group';
+    
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        group_name varchar(255) NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        PRIMARY KEY (id)
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+function create_relevance_monitoring_table() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'relevance_monitoring';
+    
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        group_id mediumint(9) NOT NULL,
+        link varchar(255) NOT NULL,
+        result text NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (group_id) REFERENCES {$wpdb->prefix}relevance_monitoring_group(id) ON DELETE CASCADE
+    ) $charset_collate;";
+    
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+}
+
+add_action('after_switch_theme', 'create_relevance_monitoring_group_table');
+add_action('after_switch_theme', 'create_relevance_monitoring_table');
