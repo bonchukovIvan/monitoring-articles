@@ -13,35 +13,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-function get_relevance_monitoring_records_by_group_id($group_id) {
-    global $wpdb;
-
-    $table_name = $wpdb->prefix . 'relevance_monitoring';
-
-    $sql = $wpdb->prepare(
-        "SELECT * FROM $table_name WHERE group_id = %d",
-        $group_id
-    );
-
-    $results = $wpdb->get_results($sql);
-
-    return $results;
-}
-
 $group_id = isset($_GET['group_id']) ? $_GET['group_id'] : null;
-$results = get_relevance_monitoring_records_by_group_id($group_id);
+$results = WbsmdDB::get_relevance_monitoring_records_by_group_id($group_id);
+$group_name = WbsmdDB::get_relevance_monitoring_group_record($group_id)[0]->group_name;
 ?>
 <?php get_header(); ?>
 <div class="border-header">
     <h2>Протокол моніторингу актуальності інформації</h2>
 </div>
+<h1>
+    <?php echo $group_name; ?>
+</h1>
+<?php  get_template_part('template-parts/relevance/settings', 'legend'); ?>
 <?php 
     if (empty($_GET)) {
         get_template_part('template-parts/relevance/results', 'error');
     }
     else {
         get_template_part('template-parts/relevance/results', 'saved', [
-            'results' => $results
+            'results' => $results,
+            'group_name' => $group_name
         ]);
     }
 ?>

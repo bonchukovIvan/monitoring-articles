@@ -51,11 +51,11 @@ $posts = new WP_Query( $args );
                 'custom_date' => $custom_date
             ]);
         }
-        elseif ($_GET['type'] === 'saved') {
+        elseif ($_GET['type'] === 'save'&& isset($_GET['group_name'])) {
             get_template_part('template-parts/relevance/settings', 'init');
-            get_template_part('template-parts/relevance/results', 'saved');
+            get_template_part('template-parts/relevance/results', 'save');
         }
-        elseif ($_GET['type'] === 'partially' && isset($_GET['run']) && isset($_GET['run'])) {
+        elseif ($_GET['type'] === 'partially' && isset($_GET['run'])) {
             get_template_part('template-parts/relevance/settings', 'init');
             get_template_part('template-parts/relevance/results', 'all',[
                 'custom_date' => $custom_date

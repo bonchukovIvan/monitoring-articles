@@ -1,3 +1,8 @@
+<?php 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+?>
 <div class="item-list">
 <?php 
     $html = new WbsmdHtmlBuilder();
@@ -12,7 +17,7 @@
                     continue;
                 }
                 foreach ($result['result'] as $section_name => $data) {
-                    if ($data['final_coefficient'] === 0) {
+                    if ($data['final_coefficient'] === 0 && !$data['events_exist']) {
                         echo '<div class="item__section">';
                         $section_title = WbsmdLocalizationHelper::get_section_title($section_name);
                             $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
@@ -25,7 +30,9 @@
                         $section_title = WbsmdLocalizationHelper::get_section_title($section_name);
                         $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
                         $html->display_item_group('К<sup>акт</sup> = '.$data['final_coefficient'].' ', '', 'item--coeff '.$item_class);
+                        // remove final_coeficient & events_exist
                         unset($data['final_coefficient']);
+                        unset($data['events_exist']);
                         echo '<div class="more-btn"><button>Детальніше</button><span class="arrow down"></span></div>';
                         echo '<div class="item__expand">';
                             echo '<div class="item__expand-body">';
