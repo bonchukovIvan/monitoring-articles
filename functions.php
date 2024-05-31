@@ -26,6 +26,20 @@ require_once WEBSUMDU_THEME_PATH . '/inc/admin/wbsmd-customizer.php';
 new Wbsmd_Customizer;
 new WbsmdDB;
 
+function restrict_access_for_non_logged_in_users() {
+    if ( !is_user_logged_in() ) {
+        if ( !is_page_template( 'templates/page-ra-results.php' ) ) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 404 );
+            get_template_part( 404 ); 
+            exit();
+        }
+    }
+}
+add_action( 'template_redirect', 'restrict_access_for_non_logged_in_users' );
+
+
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
     require_once( 'vendor/autoload.php' );

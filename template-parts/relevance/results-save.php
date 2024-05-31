@@ -2,12 +2,19 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+$html = new WbsmdHtmlBuilder();
+
 $custom_date = isset($args['custom_date']) ? $args['custom_date'] : '';
 $group_name  = isset($_GET['group_name'])  ? $_GET['group_name']  : '';
+
+if (!$group_name) {
+    $html->display_item_group('Задайте назву для звіту!', '', 'item--red');
+    exit();
+}
 ?>
 <div class="item-list">
 <?php 
-    $html = new WbsmdHtmlBuilder();
+    
     $create_group_result = WbsmdDB::create_relevance_group($group_name);
     $is_group_exist = true;
     $group_id = 0;

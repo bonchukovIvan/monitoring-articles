@@ -18,6 +18,9 @@ body, button {
 hr {
     border: 2px dashed rgba(68, 25, 239, 0.0705882353);
 }
+h1 {
+  font-size: 32px;
+}
 sup {
     top: -0.5em;
 }
@@ -64,9 +67,30 @@ sub, sup {
             flex-direction: column;
         }
     }
-
     .content-wrap {
         display: flex;
         flex-direction: column-reverse;
+    }
+}
+
+.na {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    &__body {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        border: 1px solid #858585;
+        border-radius: 16px;
+        padding: 50px;
+        strong {
+            color: red;
+            font-size: 32px;
+        }
+    }
+    &.na--err {
+        height: inherit;
     }
 }
