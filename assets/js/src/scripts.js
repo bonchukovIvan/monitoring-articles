@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('.more-btn').each(function() {
         $(this).click(function() {
-            $(this).next('.item__more-section').toggleClass("open");
+            $(this).next('.item__expand').toggleClass("open");
             $(this).find('.arrow').toggleClass("up down");
         });
     });
@@ -15,7 +15,26 @@ $(document).ready(function() {
         window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=partially" );
     });
 
-
+    $('#saved-btn').click(function() {
+        console.log(1);
+        const selected = $('#custom_date').find(":selected").val();
+        let ids = '&';
+        if ($('#partially-checkeded input[type="checkbox"]:checked').length) {
+            
+            const checkedIds = $('#partially-checkeded input[type="checkbox"]:checked').map(function() {
+                if (this.id == "select-all") {
+                    return;
+                }
+                return this.id;
+            }).get();
+            checkedIds.forEach((elem) => {
+                ids += 'foo[]='+elem+'&';
+            });
+        }
+        let group_name = $('#group_name').val();
+        window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=save"+ids+'group_name='+group_name+'&custom_date='+selected );
+        $(this).html("Почекайте...");
+    });
     $('#partially-sites-check-run').click(function() {
         let ids = '&';
         const checkedIds = $('#partially-checkeded input[type="checkbox"]:checked').map(function() {

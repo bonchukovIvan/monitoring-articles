@@ -7,7 +7,38 @@ define('WEBSUMDU_THEME_URI', get_template_directory_uri());
 
 define('WEBSUMDU_THEME_PATH', get_template_directory());
 
+define('WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS', 3);
+
+define("WBSMD_GREEN_ITEM","item--green");
+
+define("WBSMD_ORANGE_ITEM","item--orange");
+
+define("WBSMD_RED_ITEM","item--red");
+
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-db.php';
 require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-relevance-monitoring.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-localization-helper.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-html-builder.php';
+require_once WEBSUMDU_THEME_PATH . '/inc/wbsmd-http.php';
+
+require_once WEBSUMDU_THEME_PATH . '/inc/admin/wbsmd-customizer.php';
+
+new Wbsmd_Customizer;
+new WbsmdDB;
+
+function restrict_access_for_non_logged_in_users() {
+    if ( !is_user_logged_in() ) {
+        if ( !is_page_template( 'templates/page-ra-results.php' ) ) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header( 404 );
+            get_template_part( 404 ); 
+            exit();
+        }
+    }
+}
+add_action( 'template_redirect', 'restrict_access_for_non_logged_in_users' );
+
 
 add_action( 'after_setup_theme', 'crb_load' );
 function crb_load() {
@@ -160,6 +191,9 @@ function wbsmd_custom_post_types() {
     );
 }
 
+function display_array($arr) {
+    echo '<pre>' . print_r($arr, 1) . '</pre>';
+}
 function wbsmd_get_error_message() {
     return 'Інформація відсутня ;^(';
 }

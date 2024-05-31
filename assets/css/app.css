@@ -34,6 +34,15 @@
   gap: 10px;
   background-color: #00386B;
 }
+.wbsmd-header__body--na {
+  background-color: #00386B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  gap: 25px;
+  padding: 10px;
+}
 .wbsmd-header__body h1 {
   font-size: 32px;
   font-weight: 700;
@@ -83,6 +92,31 @@ body, button {
   line-height: 1.2;
 }
 
+input#group_name {
+  font-size: 18px;
+  font-family: "Lora", serif;
+  line-height: 1.2;
+  height: 100%;
+}
+
+hr {
+  border: 2px dashed rgba(68, 25, 239, 0.0705882353);
+}
+
+h1 {
+  font-size: 32px;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+}
+
 .wrapper {
   max-width: 1500px;
   margin: 0 auto;
@@ -111,7 +145,32 @@ body, button {
   gap: 25px;
 }
 
+.na {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+.na__body {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  border: 1px solid #858585;
+  border-radius: 16px;
+  padding: 50px;
+}
+.na__body strong {
+  color: red;
+  font-size: 32px;
+}
+.na.na--err {
+  height: inherit;
+}
+
 @media (max-width: 979px) {
+  .na h1, .na strong {
+    font-size: 20px;
+  }
   .site-data {
     display: flex;
     flex-direction: column;
@@ -196,6 +255,15 @@ body, button {
 .item--compact .item__prop {
   width: initial;
 }
+.item--coeff {
+  justify-content: center !important;
+  gap: 25px;
+  font-size: 20px;
+}
+.item--coeff .item__prop {
+  text-align: center;
+  width: initial;
+}
 .item__section {
   margin: 10px 0px;
   border: 1px solid rgba(211, 211, 211, 0.8078431373);
@@ -220,12 +288,19 @@ body, button {
   width: 30%;
   text-align: end;
 }
-.item__more-section {
+.item__expand {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
 }
-.item__more-section.open {
+.item__expand-body {
+  color: initial;
+  background: #fff;
+  padding: 5px;
+  margin: 10px;
+  border-radius: 3px;
+}
+.item__expand.open {
   max-height: 1000px;
   transition: max-height 1s ease-in-out;
 }
@@ -236,10 +311,14 @@ body, button {
   align-items: center;
   justify-content: space-between;
   gap: 25px;
+  background-color: #fff;
+  padding: 5px;
+  margin: 10px;
+  border-radius: 3px;
 }
 .more-btn button {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
   border: none;
   background-color: transparent;
   padding: 0;
@@ -253,6 +332,9 @@ body, button {
 .more-btn .arrow {
   position: relative;
   top: -3px;
+}
+.more-btn .arrow.up {
+  top: 0px;
 }
 
 @media (max-width: 979px) {
@@ -325,6 +407,7 @@ body, button {
   display: flex;
   gap: 25px;
   box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+  align-items: center;
   padding: 10px;
   border-radius: 5px;
 }
@@ -352,5 +435,6 @@ fieldset#partially-checkeded {
   .settings__body {
     flex-direction: column;
     padding: 10px 15px 30px 15px;
+    align-items: inherit;
   }
 }

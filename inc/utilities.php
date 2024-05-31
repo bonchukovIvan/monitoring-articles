@@ -1,24 +1,22 @@
 <?php
 
-trait WbsmdUtilities {
-    function wbsmd_choice_item_class($result) {
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
-        if ($result <= 10) {
-            return 'item--green';
-        }
-    
-        elseif ($result > 10 && $result <= 40) {
-            return 'item--orange';
-        }
-    
-        elseif ($result > 40) {
-            return 'item--red';
-        }
-    
-        return null;
+trait WbsmdUtilities {
+
+    function geometric_average($a) {  
+        foreach($a as $i=>$n) $mul = $i == 0 ? $n : $mul*$n;  
+        return pow($mul,1/count($a));  
     }
+
+
     
     function wbsmd_convert_to_percents($f, $s) {
+        return number_format((float)($f/$s)*100, 2, '.', '');
+    }
+    function wbsmd_calculate_number_of_months($f, $s) {
         return number_format((float)($f/$s)*100, 2, '.', '');
     }
 

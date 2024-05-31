@@ -10,19 +10,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 
     class WbsmdRelevanceMonitoring {
 
-        use WbsmdUtilities;
-
-        /*
-         *  Endpoint for wordpress sites
-         */
-        const WORDPRESS_ENDPOINT = '/wp-json/websumdu/v1/monitoring';
-
-        /*
-         *  Endpoint for joomla sites
-         */
-        const JOOMLA_ENDPOINT = 'index.php?option=com_ajax&plugin=ajaxarticles&format=json&custom_date=';
-
-    	/**
+        /**
 		 * Site link for check relevance posts.
 		 *
 		 * @access protected
@@ -32,41 +20,6 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         protected $link = '';
 
         /**
-		 * The type of sites CMS.
-		 *
-		 * @access protected
-		 * @since 1.0.0
-		 * @var string
-		 */
-        protected $site_cms = '';
-
-        /**
-		 * The endpoint for current site.
-		 *
-		 * @access protected
-		 * @since 1.0.0
-		 * @var string
-		 */
-        protected $endpoint = '';
-
-        /**
-		 * The method for request to site endpoint.
-		 *
-		 * @access protected
-		 * @since 1.0.0
-		 * @var string
-		 */
-        protected $method = 'GET';
-        /**
-		 * The date of start monitoring period.
-		 *
-		 * @access protected
-		 * @since 1.0.0
-		 * @var string
-		 */
-        protected  $custom_date = 'first day of january this year';
-
-        /**
 		 * The data from current site.
 		 *
 		 * @access protected
@@ -74,309 +27,151 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 		 * @var array
 		 */
         protected $data = [];
+
+        /**
+		 * Minimal posts count
+		 *
+		 * @access protected
+		 * @since 1.0.0
+		 * @var array
+		 */
+        protected $minimal_posts_count = 0;
+
+        /**
+		 * Minimal posts per months
+		 *
+		 * @access protected
+		 * @since 1.0.0
+		 * @var array
+		 */
+        protected $minimal_posts_per_months = WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS;
+
+        use WbsmdUtilities;
     
-        function __construct(
-                string $link, 
-                string $site_cms,
-                string $custom_date = ''
-            ) {
+        function __construct($link, $data, $custom_date) { 
             $this->link = $link;
-            $this->site_cms = $site_cms;
+            $this->data = $data;
             
-            if ($custom_date != '') {
-                $this->custom_date = $custom_date;
-            }
+            $custom_date = new DateTime($custom_date);
+            $today = new DateTime('today');
+            $interval = $custom_date->diff($today);
+            $months = $interval->format('%m');
 
-            switch($this->site_cms) {
-                case 'jml':
-                    $this->endpoint = self::JOOMLA_ENDPOINT . urlencode($this->custom_date);
-                    break;
-                case 'wp':
-                    $this->endpoint = self::WORDPRESS_ENDPOINT;
-                    $this->method = 'POST';
-                    break;
-            }
-
-        }
-        
-        function get_data() {
-            return $this->data;
+            $this->minimal_posts_count = $months * $this->minimal_posts_per_months;
         }
 
-        function get_request() {
-            $curl  = curl_init();
-
-            $url = $this->link . $this->endpoint;
+        function monitoring() {
+            $result = [];
+            $result['link'] = $this->link;
+            if ( empty($this->data) ) {
+                $result['result'] = ['error' => 'Плагін не встановлено або сталась непередбачувана помилка :^('];
+                return $result;
+            }
+            unset( $this->data['setup_info'] );
             
-            curl_setopt_array( $curl, [
-                CURLOPT_URL            => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING       => 'utf-8',
-                CURLOPT_MAXREDIRS      => 10,
-                CURLOPT_TIMEOUT        => 30,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2TLS,
-                CURLOPT_CUSTOMREQUEST  => $this->method,
-                CURLOPT_HTTPHEADER     => [
-                    'Content-Type: application/json',
-                ],
-            ]);
-            if ($this->site_cms === 'wp') {
-                $post_data = json_encode([
-                    'custom_date' => $this->custom_date
-                ]);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data); 
-            }
-
-            $response = json_decode( curl_exec( $curl ) );
-
-            curl_close( $curl );
-
-            if ($this->site_cms === 'wp' && isset($response->data->status)) {
-                return false;
-            }
-            if ($this->site_cms === 'jml' && empty($response->data)) {
-                return false;
-            } else {
-                $this->data = (array) $response->data[0];
-                return true;
-            }
-
-        }
-
-        function display_item_group($prop_name, $prop, $class = '') {
-            echo '<div class="item__group '. $class .'">';
-                echo '<div class="item__prop-name">' . $prop_name . '</div> ';
-                if ($prop) {
-                    echo '<div class="item__prop">' . $prop . '</div> ';
-                }
-            echo '</div>';
-        }
-
-        function display_setup($setup_info) {
-            switch(carbon_get_the_post_meta( 'site_cms' )) {
-                case 'jml':
-                    $cms = 'Joomla!';
-                    break;
-                case 'wp':
-                    $cms = 'WordPress';
-                    break;
-            }
-            $this->display_item_group( 'CMS:', $cms );
-            foreach($setup_info as $key => $value) {
-                $this->display_item_group( $key, $value );
-            }
-        }
-
-        private function display_setup_info($setup_info) {
-            echo '<div class="more-btn">';
-                echo '<button>Детальніше</button>';
-                echo '<span class="arrow down"></span>';
-            echo '</div>';
-            echo '<div class="item__more-section" id="item-more-section">';
-            $this->display_setup($setup_info);
-            echo '</div>';
-        }
-        
-        function get_cat_title( $name ) {
-            switch( $name ) {
-                case 'news':
-                    $title = 'Новини';
-                    break;
-                case 'eng_news':
-                    $title = 'Новини';
-                    break;
-                case 'events':
-                    $title = 'Анонси';
-                    break;
-                case 'eng_events':
-                    $title = 'Анонси';
-                    break;
-                default:
-                    $title  = '';
-            }
-            return $title;
-        }
-
-        function check_category($data, $name) {
-        
-            $this->display_item_group(
-                $this->get_cat_title( $name ).' (кількість публікацій за період: '.count($data).')', 
-                ''
-            );
-        
-            $last_class = (strtotime($data[0]->created) > strtotime('-10days')) 
-            ? 'item--green' 
-            : 'item--red' ;
-
-            $last_result = (strtotime($data[0]->created) > strtotime('-10days')) 
-            ? 1 
-            : 0 ;
-
-  
-            if ( count($data) == 1 ) {
-                $this->display_item_group(
-                    'Коєфіцієнт актуальності:',
-                    '<span>'. $last_result .'</span>',
-                    $last_class
-                );
-                $this->display_item_group(
-                    'Знайдено 1 запис: <span>'.$data[0]->title.'</span>', 
-                    $data[0]->created,
-                    $last_class
-                );
-            }
-            elseif ( count($data) != 1 && count($data) < 15)  {
-                $this->display_item_group(
-                    'Коєфіцієнт актуальності:',
-                    '<span>'. 0 .'</span>',
-                    'item--red'
-                );
-                $this->display_item_group(
-                    'Кількість записів менша за встановлений мінімум: <span>', 
-                    '<span>' . count($data).'</span>',
-                    'item--red'
-                );
-            }
-            elseif ( count($data) != 1 && count($data) > 15) {
-                $counter = $this->wbsmd_dates_check($data);
-                $percentage = $this->wbsmd_convert_to_percents($counter, count($data)-1);
-                $class = $this->wbsmd_choice_item_class($percentage);
-                
-                $result = 0;
-
-                if ($percentage <= 10) {
-                    $result = 1;
-                } 
-            
-                elseif ($percentage > 10 && $percentage <= 40) {
-                    $result = 0.5;
-                } 
-            
-                elseif ($percentage > 40) {
-                    $result = 0;
-                } 
-
-                $this->display_item_group(
-                    'Коефіцієнт актуальності:', 
-                    '<span>'. $result .'</span>',
-                    $class
-                );
-
-                $this->display_item_group(
-                    'Кількість порушень режиму публікації (10 днів):', 
-                    '<span>'.$counter.' з '.(count($data)-1) . ' [' . $percentage .'%]</span>',
-                    $class
-                );
-
-                $this->display_item_group(
-                    'Крайня публікація: <span>'.$data[0]->title.'</span>', 
-                    $data[0]->created,
-                    $last_class
-                );
-            } 
-            echo '<hr>';
+            $result['result'] = $this->check_categories();
+            return $result;
         }
 
         function check_categories() {
-            $c = 1;
-            foreach ($this->data as $key => $value ) {
-                if ($c === 1) {
-                    echo '<div class="item__section">';
-                    $this->display_item_group(
-                        'Україномовна версія вебсайту',
-                        '',
-                        'item--title'
-                    );
-                } elseif($c === 3) {
-                    echo '<div class="item__section">';
-                    $this->display_item_group(
-                        'Англомовна версія вебсайту',
-                        '',
-                        'item--title'
-                    );
-                }
+            return [
+                'uk' => $this->check_site_section([
+                    'news' => $this->data['news'],
+                    'events' => $this->data['events']
+                ]),
+                'eng' => $this->check_site_section([
+                    'news' => $this->data['eng_news'],
+                    'events' => $this->data['eng_events']
+                ]),
+            ];
+        }
 
-                if ( isset($value->error) ) {
-                    $c++;
-                    switch( $value->error ) {
-                        case 'category_not_found':
-                            $error = 'Категорія з заданим аліасом не знайдена :(';
-                            break;
-                        case 'posts_not_found':
-                            $error = 'Не знайдено постів за заданний період :(';
-                            break;
-                        case 'category_not_set':
-                            $error = 'Аліас не заданий :(';
-                            break;
-                        default:
-                            $error  = 'Невідома помилка :O';
-                    }
-                    $this->display_item_group(
-                        $this->get_cat_title( $key ),
-                        ''
-                    ); 
-                    $this->display_item_group(
-                        'Коефіцієнт актуальності:', 
-                        '<span>0</span>',
-                        'item--red'
-                    );
-                    $this->display_item_group(
-                        'Виникла помилка:',
-                        $error,
-                        'item--red'
-                    );
-                    echo '<hr>';
-                    if ($c === 3) {
-                        echo '</div>';
-                    } elseif($c === 5) {
-                        echo '</div>';
-                    }
-                    continue;
-  
-                }
-                $this->check_category( $value, $key );
-                $c++;
-                if ($c === 3) {
-                    echo '</div>';
-                } elseif($c === 5) {
-                    echo '</div>';
-                }
-      
+        function check_site_section( array $data ) {
+            if (!$this->check_category_exist($data['events'])) {
+                return [ 'final_coefficient' => 0, 'events_exist' => false ];
+            }
+            $events = $this->check_category($data['events']);
+            $news   = $this->check_category($data['news']);
+            return [
+                    'final_coefficient' => $news['coefficient'],
+                    'events_exist' => true,
+                    'news' => $news,
+                    'events' => $events,
+                ];
+        }
+
+        function check_category_exist( $data ) {
+            if ( is_object($data) ) {
+                return false;
+            }
+            return true;
+        }
+
+        function check_category( $data ) {
+            if ( is_object($data) ) {
+                return $this->handle_error( $data->error );
+            }
+
+            $posts_count = count( $data );
+            $errors_count = $this->wbsmd_dates_check( $data );
+            $percentage = $this->wbsmd_convert_to_percents( $errors_count, $posts_count );
+
+            $category_data = [
+                'coefficient' => $this->get_coefficient( $data, $percentage ),
+                'percentage'  => $percentage,
+                'posts_count'  => $posts_count,
+                'errors_count'  => $errors_count,
+                'last_post'   => ['title' => $data[0]->title, 'created' => $data[0]->created],
+                'minimal_posts_count'   => $this->minimal_posts_count,
+            ];
+
+            return $category_data;
+        }
+        
+        private function get_coefficient( $data, $percentage ) {
+            $posts_count = count($data);
+            switch (true) {
+                // if data have only 1 post check created
+                case $posts_count === 1:
+                    if (strtotime($data[0]->created) > strtotime('-10days')) {
+                        return 1;
+                    } else { return 0; }
+                // if posts count less then minimal posts count
+                case $posts_count != 1 && $posts_count < $this->minimal_posts_count:
+                    return 0;
+                case $percentage <= 20:
+                    return 1;
+                case $percentage > 20 && $percentage <= 50:
+                    return 0.5;
+                case $percentage > 50:
+                    return 0;
+                default:
+                    return 0;
             }
         }
 
-        function monitoring($is_single = false) {
-            $this->get_request();
-            if ( !$this->data ) {
-                echo '<div class="item no-data">';
-                    echo the_title() . '<span> Помилка :( </span>'.'<br>';
-                echo '</div>';
+        private function handle_error( $err ) {
+            return [
+                'error' => $this->get_error_message( $err ),
+                'coefficient' => 0
+            ];
+        }
 
-                return false;
+        private function get_error_message( $err ) {
+            switch( $err ) {
+                case 'category_not_found':
+                    $error = 'Категорія з заданим аліасом не знайдена :(';
+                    break;
+                case 'posts_not_found':
+                    $error = 'Не знайдено постів за заданний період :(';
+                    break;
+                case 'category_not_set':
+                    $error = 'Аліас не заданий :(';
+                    break;
+                default:
+                    $error  = 'Невідома помилка :O';
             }
-            $setup_info = $this->data['setup_info'];
-            unset( $this->data['setup_info'] );
-
-            echo '<div class="item">';
-            if (!$is_single) {
-                echo '<a href="'.get_permalink().'">';
-                $this->display_item_group('Ресурс:', $this->link, 'item--compact');
-                echo '</a>';
-            }
-                $this->display_item_group(
-                    'Дата початку періоду моніторингу:', 
-                    $setup_info->start_date, 
-                    'item--compact');
-                echo '<hr>';
-                $this->check_categories();
-            if (!$is_single) {
-                $this->display_setup_info($setup_info);
-            }
-
-            echo '</div>';
-
-            return true;
+            return $error;
         }
     }
 }
