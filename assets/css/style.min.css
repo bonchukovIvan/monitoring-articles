@@ -88,7 +88,7 @@ table {
   align-items: center;
   justify-content: center;
   color: #fff;
-  gap: 50px;
+  gap: 25px;
   padding: 10px;
 }
 .wbsmd-header__body h1 {
@@ -140,6 +140,13 @@ body, button {
   line-height: 1.2;
 }
 
+input#group_name {
+  font-size: 18px;
+  font-family: "Lora", serif;
+  line-height: 1.2;
+  height: 100%;
+}
+
 hr {
   border: 2px dashed rgba(68, 25, 239, 0.0705882353);
 }
@@ -186,16 +193,6 @@ sub, sup {
   gap: 25px;
 }
 
-@media (max-width: 979px) {
-  .site-data {
-    display: flex;
-    flex-direction: column;
-  }
-  .content-wrap {
-    display: flex;
-    flex-direction: column-reverse;
-  }
-}
 .na {
   display: flex;
   justify-content: center;
@@ -218,6 +215,19 @@ sub, sup {
   height: inherit;
 }
 
+@media (max-width: 979px) {
+  .na h1, .na strong {
+    font-size: 20px;
+  }
+  .site-data {
+    display: flex;
+    flex-direction: column;
+  }
+  .content-wrap {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+}
 .copyright__text {
   border-top: 2px dashed #f7f7f7;
   padding: 25px;
@@ -445,6 +455,7 @@ sub, sup {
   display: flex;
   gap: 25px;
   box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+  align-items: center;
   padding: 10px;
   border-radius: 5px;
 }
@@ -472,5 +483,6 @@ fieldset#partially-checkeded {
   .settings__body {
     flex-direction: column;
     padding: 10px 15px 30px 15px;
+    align-items: inherit;
   }
 }

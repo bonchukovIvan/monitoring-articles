@@ -11,7 +11,7 @@
 <div class="na">
     <div class="na__body">
         <strong>!</strong>
-        <h1>Доступ обмежено</h1>
+        <h1>Доступ обмежено :^(</h1>
         <strong>!</strong>
     </div>
 </div>

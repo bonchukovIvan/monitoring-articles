@@ -15,6 +15,12 @@ body, button {
     font-family: abs.$smd_font-family;
     line-height: abs.$smd_line-heigth;
 }
+input#group_name {
+    font-size: abs.$smd_font-size;
+    font-family: abs.$smd_font-family;
+    line-height: abs.$smd_line-heigth;
+    height: 100%;
+}
 hr {
     border: 2px dashed rgba(68, 25, 239, 0.0705882353);
 }
@@ -60,19 +66,6 @@ sub, sup {
     gap: 25px;
 }
 
-@media (max-width: abs.$smd_mobile) {
-    .site {
-        &-data {
-            display: flex;
-            flex-direction: column;
-        }
-    }
-    .content-wrap {
-        display: flex;
-        flex-direction: column-reverse;
-    }
-}
-
 .na {
     display: flex;
     justify-content: center;
@@ -94,3 +87,23 @@ sub, sup {
         height: inherit;
     }
 }
+
+@media (max-width: abs.$smd_mobile) {
+    .na {
+        h1, strong {
+            font-size: 20px;
+        }
+        
+    }
+    .site {
+        &-data {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    .content-wrap {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+}
+

@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="na na--err">
     <div class="na__body ">
         <strong>!</strong>
-        <h1>Звіт не обрано</h1>
+        <h1>Звіт не обрано :^(</h1>
         <strong>!</strong>
     </div>
 </div>

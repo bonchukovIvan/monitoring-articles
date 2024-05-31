@@ -1,7 +1,6 @@
 @use '../abstracts/' as abs;
 
 .settings {
-
     &__selected {
         display: flex;
         align-items: center;
@@ -22,6 +21,7 @@
         display: flex;
         gap: 25px;
         box-shadow: rgba(0, 1, 1, 0.3) 0px 2px 3px 0px;
+        align-items: center;
         padding: 10px;
         border-radius: 5px;
         button {
@@ -52,6 +52,7 @@ fieldset#partially-checkeded {
         &__body {
             flex-direction: column;
             padding: 10px 15px 30px 15px;
+            align-items: inherit;
         }
     }
 }
