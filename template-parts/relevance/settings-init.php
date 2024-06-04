@@ -17,18 +17,12 @@ $checks = new WP_Query( $args );
         <?php if (!empty($_GET) && $_GET['type'] === 'all') : ?>
             <button type="button" id="saved-btn">Збереження звіту</button>
             <button type="button" id="all-sites-check">Перевірити всі сайти повторно</button>
-            
+           
         <?php else : ?>
             <input type="text" id="group_name" placeholder="Введіть назву звіту">
             <button type="button" id="saved-btn">Збереження звіту</button>
-
-        <?php endif; ?>     
-            <button type="button" id="partially-sites-check">Вибрати сайти</button>
-
-        <?php if (!empty($_GET) && $_GET['type'] === 'partially') : ?>
             <button type="button" id="partially-sites-check-run">Перевірити</button>
-
-        <?php endif; ?>  
+        <?php endif; ?>       
         <div class="settings__selected">
             <select name="custom_date" id="custom_date">
                 <option value="first day of december previous year" selected>1 грудня минулого року</option>
@@ -45,7 +39,7 @@ $checks = new WP_Query( $args );
 <?php if (!empty($_GET) && $_GET['type'] != 'all') : ?>
 <div class="content-wrap">
 <?php endif; ?>
-<?php if (!empty($_GET) && $_GET['type'] === 'partially') : ?>
+
 <fieldset id="partially-checkeded">
     <div class="settings__field">
         <input type="checkbox" name="select-all" id="select-all" />
@@ -61,6 +55,6 @@ $checks = new WP_Query( $args );
                 <label for="<?php the_title(); ?>"><?php echo WbsmdLocalizationHelper::remove_symbol_from_url(the_title('', '', false)); ?></label>
             </div>
         <?php endwhile; ?>
-    <?php endif; ?>
+
 </fieldset>
 <?php endif; ?>

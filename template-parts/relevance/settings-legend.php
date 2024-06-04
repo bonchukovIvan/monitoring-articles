@@ -17,17 +17,17 @@ $minimal_posts_count = $months * WBSMD_MINIMAL_POSTS_COUNT_PER_MONTHS;
             <div class="item__prop-name">Дата початку періоду моніторингу: </div>
             <div class="item__prop"><?php echo $custom_date->format('Y-m-d'); ?></div>
         </div>
-    <div class="item__section">
-        <div class="item__group item--green">
-            <div class="item__prop-name">Коєфіцієнт актуальності: 1</div>
+    <div class="item__section legend">
+        <div class="item__group item--green f-33">
+            <div class="item__prop-name">К<sup>акт</sup>: 1</div>
             <div class="item__prop">кількість порушень <= 20%</div>
         </div>
-        <div class="item__group item--orange">
-            <div class="item__prop-name">Коєфіцієнт актуальності: 0.5</div>
+        <div class="item__group item--orange f-33">
+            <div class="item__prop-name">К<sup>акт</sup>: 0.5</div>
             <div class="item__prop">кількість порушень > 20%та кількість порушень <= 50%</div>
         </div>
-        <div class="item__group item--red">
-            <div class="item__prop-name">Коєфіцієнт актуальності: 0</div>
+        <div class="item__group item--red f-33">
+            <div class="item__prop-name">К<sup>акт</sup>: 0</div>
             <div class="item__prop">кількість порушень > 50%</div>
         </div>
     </div>

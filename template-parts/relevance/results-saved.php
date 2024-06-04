@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         echo '<div class="item__section">';
                         $section_title = WbsmdLocalizationHelper::get_section_title($section_name);
                             $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
-                            $html->display_item_group('Ваш вебсайт потребує упорядкування. Інформаційний блок анонсів відсутній. ', '', 'item--red');
+                            $html->display_item_group('Ваш вебсайт потребує упорядкування. Інформаційний блок анонсів відсутній. К<sup>акт</sup> = 0', '', 'item--red');
                         echo '</div>';
                         continue;
                     }

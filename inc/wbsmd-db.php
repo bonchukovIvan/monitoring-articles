@@ -8,11 +8,11 @@ if ( ! class_exists('WbsmdDB') ) {
 	class WbsmdDB {
 
 		public function __construct() { 
-            define("WBSMD_RM_GROUP_TABLE","relevance_monitoring_group");
-            define("WBSMD_RM_TABLE","relevance_monitoring");
+            define( "WBSMD_RM_GROUP_TABLE","relevance_monitoring_group" );
+            define( "WBSMD_RM_TABLE","relevance_monitoring" );
 
-            add_action('after_switch_theme', 'create_relevance_monitoring_group_table');
-            add_action('after_switch_theme', 'create_relevance_monitoring_table');
+            add_action('after_switch_theme', ['$this', 'create_relevance_monitoring_group_table'] );
+            add_action('after_switch_theme', ['$this', 'create_relevance_monitoring_table'] );
         }
 
         private function create_relevance_monitoring_group_table() {
@@ -60,7 +60,27 @@ if ( ! class_exists('WbsmdDB') ) {
             return $results;
         }
 
-        static function create_relevance_group(string $group_name = 'no_name') {
+        public static function delete_group( $id ) {
+            global $wpdb;
+            $table_name = $wpdb->prefix . WBSMD_RM_GROUP_TABLE;
+
+            $wpdb->delete(
+                $table_name,
+                array(
+                    'ID' => $id, 
+                )
+            );
+            
+            if ( $wpdb->last_error ) {
+                error_log("Error creating relevance_monitoring table: " . $wpdb->last_error);
+                return [
+                    'success' => false,
+                    'errors' => $wpdb->last_error
+                ];
+            }
+        }
+
+        static function create_relevance_group( string $group_name = 'no_name' ) {
             global $wpdb;
             $table_name = $wpdb->prefix . WBSMD_RM_GROUP_TABLE;
             $existing_link = $wpdb->get_var($wpdb->prepare(
@@ -78,7 +98,7 @@ if ( ! class_exists('WbsmdDB') ) {
                 ['group_name' => $group_name],
                 ['%s']
             );
-            if ($wpdb->last_error) {
+            if ( $wpdb->last_error ) {
                 error_log("Error creating relevance_monitoring table: " . $wpdb->last_error);
                 return [
                     'success' => false,
@@ -91,7 +111,7 @@ if ( ! class_exists('WbsmdDB') ) {
             ];
         }
 
-        static function save_result_to_db($group_id, $result) {
+        static function save_result_to_db( $group_id, $result ) {
             global $wpdb;
             $table_name = $wpdb->prefix . WBSMD_RM_TABLE;
 
@@ -109,7 +129,7 @@ if ( ! class_exists('WbsmdDB') ) {
                 ]
             );
             
-            if ($wpdb->last_error) {
+            if ( $wpdb->last_error ) {
                 error_log("Error creating relevance_monitoring table: " . $wpdb->last_error);
                 return [
                     'success' => false,
@@ -119,7 +139,7 @@ if ( ! class_exists('WbsmdDB') ) {
             return true;
         }
 
-        static function get_relevance_monitoring_records_by_group_id($group_id) {
+        static function get_relevance_monitoring_records_by_group_id( $group_id ) {
             global $wpdb;
         
             $table_name = $wpdb->prefix . WBSMD_RM_TABLE;
@@ -133,7 +153,8 @@ if ( ! class_exists('WbsmdDB') ) {
         
             return $results;
         }
-        static function get_relevance_monitoring_group_record($group_id) {
+
+        static function get_relevance_monitoring_group_record( $group_id ) {
             global $wpdb;
         
             $table_name = $wpdb->prefix . WBSMD_RM_GROUP_TABLE;
@@ -143,7 +164,7 @@ if ( ! class_exists('WbsmdDB') ) {
                 $group_id
             );
         
-            $group = $wpdb->get_results($sql);
+            $group = $wpdb->get_results( $sql );
         
             return $group;
         }

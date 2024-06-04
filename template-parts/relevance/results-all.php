@@ -6,9 +6,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="item-list">
     <?php 
+
     if (isset($args['custom_date'])) {
         $custom_date = $args['custom_date'];
     }
+
     $html = new WbsmdHtmlBuilder();
     if ( $posts->have_posts() )  {
         while ( $posts->have_posts() ) {
@@ -27,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 $args['custom_date']
             );
             $result = $rm->monitoring();
-            
+
             echo '<div class="item">';  
                 $html->display_item_group( WbsmdLocalizationHelper::remove_symbol_from_url($result['link']), '', 'item--title');
                 if (isset($result['result']['error'])) {
@@ -40,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         echo '<div class="item__section">';
                         $section_title = WbsmdLocalizationHelper::get_section_title($section_name);
                             $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
-                            $html->display_item_group('Ваш вебсайт потребує упорядкування. Інформаційний блок анонсів відсутній. ', '', 'item--red');
+                            $html->display_item_group('Ваш вебсайт потребує упорядкування. Інформаційний блок анонсів відсутній. К<sup>акт</sup> = 0', '', 'item--red');
                         echo '</div>';
                         continue;
                     }
@@ -50,7 +52,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                         $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
                         $html->display_item_group('К<sup>акт</sup> = '.$data['final_coefficient'].' ', '', 'item--coeff '.$item_class);
                         
-                        // remove final_coeficient & events_exist
+                        /* 
+                         * remove final_coeficient & events_exist
+                         * if you add any value on results remove this below
+                         */
                         unset($data['final_coefficient']);
                         unset($data['events_exist']);
 
@@ -59,9 +64,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                             echo '<div class="item__expand-body">';
                             foreach($data as $category_name => $value) {
                                     $category_title = WbsmdLocalizationHelper::get_cat_title( $category_name );
+                                    
                                     if (isset($value['error'])) {
                                         $html->display_item_group($category_title);
-                                        $html->display_item_group('Коефіцієнт актуальності: ', $value['coefficient'].' ', WBSMD_RED_ITEM);
+                                        if ( $category_name != 'events' ) {
+                                            $html->display_item_group('К<sup>акт</sup> = '. $value['coefficient'].' ', '', WBSMD_RED_ITEM);
+                                        }
                                         $html->display_item_group('Помилка: ', $value['error'], WBSMD_RED_ITEM);
                                         echo '<hr>';
                                         continue;

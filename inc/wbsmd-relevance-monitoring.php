@@ -101,7 +101,7 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
         }
 
         function check_category_exist( $data ) {
-            if ( is_object($data) ) {
+            if ( is_object($data) && $data->error != 'posts_not_found') {
                 return false;
             }
             return true;

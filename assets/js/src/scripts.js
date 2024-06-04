@@ -15,6 +15,11 @@ $(document).ready(function() {
         window.location.href = window.location.href.replace( /[\?#].*|$/, "?type=partially" );
     });
 
+    $('.remove-group-record').click(function() {
+        $id = $(this).prev("#group_id").val();
+        window.location.href = window.location.href.replace( /[\?#].*|$/, "?remove=1&group_id="+$id );
+    });
+
     $('#saved-btn').click(function() {
         console.log(1);
         const selected = $('#custom_date').find(":selected").val();
