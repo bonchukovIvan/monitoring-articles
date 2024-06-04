@@ -11,11 +11,11 @@ if ( ! class_exists('WbsmdDB') ) {
             define( "WBSMD_RM_GROUP_TABLE","relevance_monitoring_group" );
             define( "WBSMD_RM_TABLE","relevance_monitoring" );
 
-            add_action('after_switch_theme', ['$this', 'create_relevance_monitoring_group_table'] );
-            add_action('after_switch_theme', ['$this', 'create_relevance_monitoring_table'] );
+            add_action ('after_switch_theme', [$this, 'create_relevance_monitoring_group_table'] );
+            add_action( 'after_switch_theme', [$this, 'create_relevance_monitoring_table'] );
         }
-
-        private function create_relevance_monitoring_group_table() {
+        
+        public function create_relevance_monitoring_group_table() {
             global $wpdb;
         
             $table_name = $wpdb->prefix . WBSMD_RM_GROUP_TABLE;
@@ -33,7 +33,7 @@ if ( ! class_exists('WbsmdDB') ) {
             dbDelta($sql);
         }
         
-        private function create_relevance_monitoring_table() {
+        public function create_relevance_monitoring_table() {
             global $wpdb;
         
             $table_name = $wpdb->prefix . WBSMD_RM_TABLE;

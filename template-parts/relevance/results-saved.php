@@ -40,7 +40,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     $category_title = WbsmdLocalizationHelper::get_cat_title( $category_name );
                                     if (isset($value['error'])) {
                                         $html->display_item_group($category_title);
-                                        $html->display_item_group('Коефіцієнт актуальності: ', $value['coefficient'].' ', WBSMD_RED_ITEM);
+                                        if ($category_name != 'events') {
+                                            $html->display_item_group('Коефіцієнт актуальності: ', $value['coefficient'].' ', WBSMD_RED_ITEM);
+                                        }
+                                        
                                         $html->display_item_group('Помилка: ', $value['error'], WBSMD_RED_ITEM);
                                         echo '<hr>';
                                         continue;
