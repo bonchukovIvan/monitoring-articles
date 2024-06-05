@@ -36,7 +36,7 @@ if ( ! class_exists('WbsmdHttp') ) {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING       => 'utf-8',
 			CURLOPT_MAXREDIRS      => 10,
-			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_TIMEOUT        => 5,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2TLS,
 			CURLOPT_HTTPHEADER     => [
