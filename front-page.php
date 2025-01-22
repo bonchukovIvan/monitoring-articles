@@ -25,9 +25,7 @@ $menu = wp_get_nav_menu_items($menuID);
     <h2> <?php the_title(); ?></h2>
 </div>
 
-<div class="border-header">
-    <h3>Оберіть потрібний тип моніторингу нижче:</h3>
-</div>
+
 
 <section class="wbsmd-cards">
     <div class="wbsmd-cards__body">

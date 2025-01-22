@@ -36,7 +36,7 @@ if ( ! class_exists('WbsmdHttp') ) {
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING       => 'utf-8',
 			CURLOPT_MAXREDIRS      => 10,
-			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_TIMEOUT        => 5,
 			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_2TLS,
 			CURLOPT_HTTPHEADER     => [
@@ -70,7 +70,6 @@ if ( ! class_exists('WbsmdHttp') ) {
 
 		public function get_site_data() {
 			$response = new stdClass;
-
 			if ( $this->site_cms === 'jml' ) {
 				$this->link .= self::JOOMLA_ENDPOINT . urlencode($this->custom_date);
 				$response = $this->get_request($this->link);
@@ -83,11 +82,9 @@ if ( ! class_exists('WbsmdHttp') ) {
 				$body = json_encode( ['custom_date' => $this->custom_date] );
 				$response = $this->post_request($this->link, $body);
 			}
-
-			if (!is_array($response->data)) {
+			if (!isset($response->data) || !is_array($response->data)) {
 				return [];
 			}
-			
 			return (array) $response->data[0];
 		}
 

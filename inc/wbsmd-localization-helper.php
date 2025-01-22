@@ -39,7 +39,7 @@ class WbsmdLocalizationHelper {
     }
     
     public static function remove_symbol_from_url( $url ) {
-        return str_replace('/', '', str_replace('https://', '', $url));
+        return str_replace('/','',str_replace('https:','',str_replace('http:','',$url)));
     }
 
     public static function get_section_title( $name ) {

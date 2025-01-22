@@ -39,8 +39,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <div id="page" class="site">
+    
 
-	<?php get_template_part('template-parts/header/site', 'header'); ?>
+<?php
+    if ( is_user_logged_in() ){
+        get_template_part('template-parts/header/header', 'auth'); 
+    } else {
+        get_template_part('template-parts/header/header', 'nonauth'); 
+    }
+    
+
+?>
 
 	<div id="content" class="site-content">
 		<div id="primary" class="content-area">

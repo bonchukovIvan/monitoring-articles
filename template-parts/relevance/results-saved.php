@@ -3,34 +3,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 ?>
-
 <div class="item-list">
-    <?php 
-
-    if (isset($args['custom_date'])) {
-        $custom_date = $args['custom_date'];
-    }
-
+<?php 
     $html = new WbsmdHtmlBuilder();
-    if ( $posts->have_posts() )  {
-        while ( $posts->have_posts() ) {
-            $posts->the_post();
-
-            $http = new WbsmdHttp(
-                the_title('', '', false),
-                carbon_get_the_post_meta( 'site_cms' ),
-                $args['custom_date']
-            );
-            $data = $http->get_site_data();
-
-            $rm = new WbsmdRelevanceMonitoring(
-                the_title('', '', false),
-                $data,
-                $args['custom_date']
-            );
-            $result = $rm->monitoring();
-
-            echo '<div class="item">';  
+    $results = $args['results'];
+    foreach ($results as $result) {
+        $result = json_decode($result->result, 1);
+        echo '<div class="item">';  
                 $html->display_item_group( WbsmdLocalizationHelper::remove_symbol_from_url($result['link']), '', 'item--title');
                 if (isset($result['result']['error'])) {
                     $html->display_item_group('Помилка:', $result['result']['error'], WBSMD_RED_ITEM);
@@ -51,25 +30,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                         $section_title = WbsmdLocalizationHelper::get_section_title($section_name);
                         $html->display_item_group($section_title.' версія вебсайту', '', 'item--title');
                         $html->display_item_group('К<sup>акт</sup> = '.$data['final_coefficient'].' ', '', 'item--coeff '.$item_class);
-                        
-                        /* 
-                         * remove final_coeficient & events_exist
-                         * if you add any value on results remove this below
-                         */
+                        // remove final_coeficient & events_exist
                         unset($data['final_coefficient']);
                         unset($data['events_exist']);
-
                         echo '<div class="more-btn"><button>Детальніше</button><span class="arrow down"></span></div>';
                         echo '<div class="item__expand">';
                             echo '<div class="item__expand-body">';
                             foreach($data as $category_name => $value) {
                                     $category_title = WbsmdLocalizationHelper::get_cat_title( $category_name );
-                                    
                                     if (isset($value['error'])) {
                                         $html->display_item_group($category_title);
-                                        if ( $category_name != 'events' ) {
-                                            $html->display_item_group('К<sup>акт</sup> = '. $value['coefficient'].' ', '', WBSMD_RED_ITEM);
+                                        if ($category_name != 'events') {
+                                            $html->display_item_group('Коефіцієнт актуальності: ', $value['coefficient'].' ', WBSMD_RED_ITEM);
                                         }
+                                        
                                         $html->display_item_group('Помилка: ', $value['error'], WBSMD_RED_ITEM);
                                         echo '<hr>';
                                         continue;
@@ -105,7 +79,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                     echo '</div>';
                 }
             echo '</div>';
-        }
     }
-    ?>
+?>
 </div>

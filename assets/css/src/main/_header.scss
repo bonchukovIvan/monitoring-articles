@@ -13,6 +13,15 @@
         display: flex;
         gap: 10px;
         background-color: abs.$smd_blue;
+        &--na {
+            background-color: abs.$smd_blue;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            gap: 25px;
+            padding: 10px;
+        }
     }
     &-header__body h1 {
         font-size: 32px;

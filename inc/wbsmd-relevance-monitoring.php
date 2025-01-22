@@ -88,19 +88,20 @@ if ( ! class_exists( 'WbsmdRelevanceMonitoring' ) ) {
 
         function check_site_section( array $data ) {
             if (!$this->check_category_exist($data['events'])) {
-                return [ 'final_coefficient' => 0 ];
+                return [ 'final_coefficient' => 0, 'events_exist' => false ];
             }
             $events = $this->check_category($data['events']);
             $news   = $this->check_category($data['news']);
             return [
                     'final_coefficient' => $news['coefficient'],
+                    'events_exist' => true,
                     'news' => $news,
                     'events' => $events,
                 ];
         }
 
         function check_category_exist( $data ) {
-            if ( is_object($data) ) {
+            if ( is_object($data) && $data->error != 'posts_not_found') {
                 return false;
             }
             return true;
